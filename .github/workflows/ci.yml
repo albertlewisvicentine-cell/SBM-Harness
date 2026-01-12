@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, 'copilot/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make cppcheck
+    
+    - name: Build all targets
+      run: make all
+    
+    - name: Run unit tests
+      run: ./build/unit_tests
+    
+    - name: Run fault injection tests
+      run: ./build/fault_injection_suite
+    
+    - name: Run cppcheck static analysis
+      run: make cppcheck
+      continue-on-error: true
+    
+    - name: List build artifacts
+      run: ls -lR build/
