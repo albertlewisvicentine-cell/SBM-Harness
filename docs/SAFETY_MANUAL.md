@@ -92,10 +92,12 @@ The harness provides the `GUARD_INDEX(idx, len)` macro:
 
 **Usage Example:**
 ```c
-sbm_status_t get_element(int *array, size_t idx, size_t length) {
+sbm_status_t get_element(int *array, size_t idx, size_t length, int *out_value) {
     GUARD_PTR(array);
+    GUARD_PTR(out_value);
     GUARD_INDEX(idx, length);  /* Validates idx < length */
-    return array[idx];
+    *out_value = array[idx];
+    return SBM_OK;
 }
 ```
 
