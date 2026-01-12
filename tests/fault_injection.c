@@ -5,6 +5,9 @@
  * This executable intentionally injects faults (null pointers, out-of-bounds
  * access, etc.) to demonstrate that the SBM harness correctly detects and
  * reports violations. Returns non-zero exit code on fault detection.
+ * 
+ * Note: Code after guard macros is intentionally unreachable in these tests,
+ * demonstrating that the guards prevent unsafe operations from executing.
  */
 
 #include "sbm_harness.h"
@@ -13,11 +16,14 @@
 
 /**
  * @brief Test function that attempts null pointer access
+ * 
+ * This function intentionally passes a null pointer to demonstrate guard behavior.
+ * The code after GUARD_PTR is unreachable and will never execute.
  */
 static sbm_status_t test_null_pointer(void) {
     int *ptr = NULL;
     GUARD_PTR(ptr);  /* Should trigger SBM_ERR_NULL */
-    *ptr = 42;       /* Should never reach here */
+    *ptr = 42;       /* Unreachable - demonstrates guard prevents unsafe operation */
     return SBM_OK;
 }
 

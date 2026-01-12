@@ -20,6 +20,10 @@
  * Checks that a pointer is not NULL before dereferencing.
  * Implements SBM-000: Null pointer check enforcement.
  * 
+ * Note: This macro requires the calling function to return sbm_status_t.
+ * For functions with different return types, use sbm_check_bounds() directly
+ * or adapt the error handling pattern.
+ * 
  * @param p Pointer to validate
  * @return Returns SBM_ERR_NULL if pointer is NULL, otherwise continues
  */
@@ -39,6 +43,7 @@
  * 
  * Note: Both idx and len should be unsigned types. Signed integer
  * types may cause unexpected behavior with negative values.
+ * This macro requires the calling function to return sbm_status_t.
  * 
  * @param idx Index value to check (should be unsigned)
  * @param len Length of the array (should be unsigned)
@@ -58,6 +63,8 @@
  * Enforces bounded loop behavior by checking iteration count against
  * the maximum specified in the context structure.
  * Implements SBM-005: Loop bound enforcement.
+ * 
+ * Note: This macro requires the calling function to return sbm_status_t.
  * 
  * @param ctx Loop context structure (must have max_iterations set)
  * @return Returns SBM_ERR_TIMEOUT if iteration limit exceeded

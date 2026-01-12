@@ -6,9 +6,14 @@
  * management in safety-critical operations. The implementation uses
  * stack-allocated buffers and is intentionally simple for auditability.
  * 
- * NOTE: This is an illustrative, single-threaded implementation for
- * demonstration purposes. Production systems should implement proper
- * atomic operations and thread-safety mechanisms.
+ * IMPORTANT: This is an illustrative, single-threaded implementation for
+ * demonstration purposes only. It uses malloc for simplicity.
+ * 
+ * Production systems MUST:
+ * - Use pre-allocated memory pools (no dynamic allocation)
+ * - Implement proper thread-safety mechanisms
+ * - Add deterministic timing guarantees
+ * - Integrate with certified RTOS memory management
  */
 
 #include "sbm_harness.h"
