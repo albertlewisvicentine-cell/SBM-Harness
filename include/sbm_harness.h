@@ -12,6 +12,7 @@
 
 #include "sbm_types.h"
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * @brief Validate pointer is non-null
@@ -36,8 +37,11 @@
  * Checks that an index is within the valid range [0, len).
  * Implements SBM-002: Array bounds checking.
  * 
- * @param idx Index value to check
- * @param len Length of the array
+ * Note: Both idx and len should be unsigned types. Signed integer
+ * types may cause unexpected behavior with negative values.
+ * 
+ * @param idx Index value to check (should be unsigned)
+ * @param len Length of the array (should be unsigned)
  * @return Returns SBM_ERR_OOB if index is out of bounds
  */
 #define GUARD_INDEX(idx, len) \
@@ -51,17 +55,17 @@
 /**
  * @brief Check loop iteration limit
  * 
- * Enforces bounded loop behavior by checking iteration count against maximum.
+ * Enforces bounded loop behavior by checking iteration count against
+ * the maximum specified in the context structure.
  * Implements SBM-005: Loop bound enforcement.
  * 
- * @param ctx Loop context structure
- * @param max Maximum allowed iterations
+ * @param ctx Loop context structure (must have max_iterations set)
  * @return Returns SBM_ERR_TIMEOUT if iteration limit exceeded
  */
-#define CHECK_LOOP_LIMIT(ctx, max) \
+#define CHECK_LOOP_LIMIT(ctx) \
     do { \
         (ctx).iteration++; \
-        if ((ctx).iteration > (max)) { \
+        if ((ctx).iteration > (ctx).max_iterations) { \
             sbm_failure_handler(__FILE__, __LINE__, "Loop limit exceeded", SBM_ERR_TIMEOUT); \
             return SBM_ERR_TIMEOUT; \
         } \
@@ -112,6 +116,28 @@
  * @param status Error status code
  */
 void sbm_failure_handler(const char *file, int line, const char *msg, sbm_status_t status);
+
+/**
+ * @brief Runtime index bounds check helper
+ * 
+ * Validates that an index is within bounds at runtime.
+ * 
+ * @param idx Index to validate
+ * @param length Array length
+ * @return SBM_OK if in bounds, SBM_ERR_OOB otherwise
+ */
+sbm_status_t sbm_check_bounds(size_t idx, size_t length);
+
+/**
+ * @brief Simple checksum for data validation
+ * 
+ * Computes a basic checksum over a memory region.
+ * 
+ * @param data Pointer to data buffer
+ * @param size Size of buffer in bytes
+ * @return 32-bit checksum value
+ */
+uint32_t sbm_checksum(const void *data, size_t size);
 
 /**
  * @brief Begin a state snapshot

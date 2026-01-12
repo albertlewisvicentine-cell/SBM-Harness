@@ -122,7 +122,7 @@ Unbounded loops can cause system hangs, watchdog timeouts, and missed deadlines 
 
 ### Enforcement in Code
 
-The harness provides the `CHECK_LOOP_LIMIT(ctx, max)` macro with loop context tracking:
+The harness provides the `CHECK_LOOP_LIMIT(ctx)` macro with loop context tracking:
 
 ```c
 typedef struct {
@@ -130,10 +130,10 @@ typedef struct {
     uint32_t max_iterations;
 } sbm_loop_ctx_t;
 
-#define CHECK_LOOP_LIMIT(ctx, max) \
+#define CHECK_LOOP_LIMIT(ctx) \
     do { \
         (ctx).iteration++; \
-        if ((ctx).iteration > (max)) { \
+        if ((ctx).iteration > (ctx).max_iterations) { \
             sbm_failure_handler(__FILE__, __LINE__, "Loop limit exceeded", SBM_ERR_TIMEOUT); \
             return SBM_ERR_TIMEOUT; \
         } \
@@ -146,7 +146,7 @@ sbm_status_t process_list(void) {
     sbm_loop_ctx_t ctx = {0, 1000};  /* Max 1000 iterations */
     
     while (has_more_data()) {
-        CHECK_LOOP_LIMIT(ctx, 1000);  /* Enforce limit */
+        CHECK_LOOP_LIMIT(ctx);  /* Enforce limit */
         process_next();
     }
     

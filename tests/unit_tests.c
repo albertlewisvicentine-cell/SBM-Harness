@@ -61,8 +61,6 @@ static void test_snapshot_rollback(void) {
 static void test_bounds_check(void) {
     printf("Test: Bounds checking...\n");
     
-    extern sbm_status_t sbm_check_bounds(size_t idx, size_t length);
-    
     assert(sbm_check_bounds(0, 10) == SBM_OK);
     assert(sbm_check_bounds(9, 10) == SBM_OK);
     assert(sbm_check_bounds(10, 10) == SBM_ERR_OOB);
@@ -76,8 +74,6 @@ static void test_bounds_check(void) {
  */
 static void test_checksum(void) {
     printf("Test: Checksum function...\n");
-    
-    extern uint32_t sbm_checksum(const void *data, size_t size);
     
     char data1[] = "test";
     char data2[] = "test";

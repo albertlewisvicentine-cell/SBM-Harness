@@ -39,7 +39,7 @@ static sbm_status_t test_loop_limit(void) {
     sbm_loop_ctx_t ctx = {0, 100};
     
     for (int i = 0; i < 150; i++) {
-        CHECK_LOOP_LIMIT(ctx, 100);  /* Should trigger SBM_ERR_TIMEOUT at 101 */
+        CHECK_LOOP_LIMIT(ctx);  /* Should trigger SBM_ERR_TIMEOUT at 101 */
     }
     
     return SBM_OK;
