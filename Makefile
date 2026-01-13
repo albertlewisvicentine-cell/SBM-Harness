@@ -7,7 +7,7 @@ CFLAGS = -std=c11 -Wall -Wextra -O2 -Iinclude -Itests
 BUILD_DIR = build
 
 # Source files
-SRC_FILES = src/core_guards.c src/state_manager.c
+SRC_FILES = src/core_guards.c src/sbm_snapshot.c
 OBJ_FILES = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 
 # Test executables
@@ -23,7 +23,7 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 # Compile source files to object files
-$(BUILD_DIR)/%.o: src/%.c include/sbm_harness.h include/sbm_types.h
+$(BUILD_DIR)/%.o: src/%.c include/sbm_harness.h include/sbm_types.h include/sbm_snapshot.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Build fault injection test suite
