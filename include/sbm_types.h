@@ -38,4 +38,13 @@ typedef struct {
     uint32_t max_iterations; /**< Maximum allowed iterations */
 } sbm_loop_ctx_t;
 
+/**
+ * @brief Opaque handle for snapshot operations
+ * 
+ * This handle represents a snapshot of system state that can be
+ * committed or rolled back. The internal structure is hidden from
+ * users to maintain encapsulation.
+ */
+typedef void* sbm_snapshot_handle_t;
+
 #endif /* SBM_TYPES_H */

@@ -7,6 +7,7 @@
  */
 
 #include "sbm_harness.h"
+#include "sbm_snapshot.h"
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -109,6 +110,89 @@ static void test_macros(void) {
 }
 
 /**
+ * @brief Test new snapshot API - init, take, and commit
+ */
+static void test_new_snapshot_api(void) {
+    printf("Test: New snapshot API (take/commit)...\n");
+    
+    int state = 42;
+    sbm_snapshot_handle_t handle = NULL;
+    
+    /* Init is optional (lazy initialization) */
+    sbm_status_t status = sbm_snapshot_init();
+    assert(status == SBM_OK);
+    
+    /* Test take and commit */
+    status = sbm_snapshot_take(&state, sizeof(state), &handle);
+    assert(status == SBM_OK);
+    assert(handle != NULL);
+    
+    state = 100;  /* Modify state */
+    
+    status = sbm_snapshot_commit(handle);
+    assert(status == SBM_OK);
+    assert(state == 100);  /* State should remain modified */
+    
+    printf("  [PASS]\n");
+}
+
+/**
+ * @brief Test new snapshot API rollback functionality
+ */
+static void test_new_snapshot_api_rollback(void) {
+    printf("Test: New snapshot API (rollback)...\n");
+    
+    int state = 42;
+    sbm_snapshot_handle_t handle = NULL;
+    
+    sbm_status_t status = sbm_snapshot_take(&state, sizeof(state), &handle);
+    assert(status == SBM_OK);
+    assert(handle != NULL);
+    
+    state = 100;  /* Modify state */
+    assert(state == 100);
+    
+    status = sbm_snapshot_rollback(handle);
+    assert(status == SBM_OK);
+    assert(state == 42);  /* State should be restored */
+    
+    printf("  [PASS]\n");
+}
+
+/**
+ * @brief Test snapshot export functionality
+ */
+static int test_writer_called = 0;
+static int test_writer(const void *data, size_t size, void *context) {
+    (void)data;
+    (void)context;
+    test_writer_called = 1;
+    return (int)size;  /* Return bytes written */
+}
+
+static void test_snapshot_export(void) {
+    printf("Test: Snapshot export...\n");
+    
+    int state = 42;
+    sbm_snapshot_handle_t handle = NULL;
+    
+    sbm_status_t status = sbm_snapshot_take(&state, sizeof(state), &handle);
+    assert(status == SBM_OK);
+    assert(handle != NULL);
+    
+    test_writer_called = 0;
+    status = sbm_snapshot_export(handle, test_writer, NULL);
+    assert(status == SBM_OK);
+    assert(test_writer_called == 1);  /* Writer should have been called */
+    
+    /* Snapshot should still be valid after export */
+    status = sbm_snapshot_commit(handle);
+    assert(status == SBM_OK);
+    
+    printf("  [PASS]\n");
+}
+
+/**
  * @brief Main test runner
  */
 int main(void) {
@@ -119,6 +203,9 @@ int main(void) {
     test_bounds_check();
     test_checksum();
     test_macros();
+    test_new_snapshot_api();
+    test_new_snapshot_api_rollback();
+    test_snapshot_export();
     
     printf("\n=== All unit tests passed ===\n");
     return 0;
