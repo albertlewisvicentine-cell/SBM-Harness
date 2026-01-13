@@ -7,6 +7,10 @@ CFLAGS = -std=c11 -Wall -Wextra -O2 -Iinclude -Itests
 BUILD_DIR = build
 
 # Source files
+# Note: state_manager.c is excluded to avoid duplicate symbol definitions.
+# The new sbm_snapshot.c provides the same API plus enhanced functionality
+# with backward compatibility wrappers. state_manager.c is kept in the repo
+# for reference and documentation purposes.
 SRC_FILES = src/core_guards.c src/sbm_snapshot.c
 OBJ_FILES = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 

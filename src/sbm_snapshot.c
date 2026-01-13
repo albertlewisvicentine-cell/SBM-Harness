@@ -249,11 +249,15 @@ sbm_status_t sbm_snapshot_rollback(sbm_snapshot_handle_t handle) {
  * This allows existing code to continue working while transitioning to the
  * new API.
  * 
+ * Note: sbm_snapshot_handle_t is typedef'd as void*, so the parameter types
+ * are compatible (both are void**).
+ * 
  * @param state Pointer to state to snapshot
  * @param size Size of state in bytes
  * @param snapshot_handle Output parameter for snapshot handle
  * @return SBM_OK on success, error code on failure
  */
 sbm_status_t sbm_snapshot_begin(void *state, size_t size, void **snapshot_handle) {
-    return sbm_snapshot_take(state, size, (sbm_snapshot_handle_t *)snapshot_handle);
+    /* Safe cast: sbm_snapshot_handle_t is typedef'd as void*, so void** == sbm_snapshot_handle_t* */
+    return sbm_snapshot_take(state, size, snapshot_handle);
 }
