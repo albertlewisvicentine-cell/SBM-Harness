@@ -1,5 +1,6 @@
 {
-  "violation_type": "SBM-007_sampling",
+  "violation_type": "resource_sampling_violation",
+  "evidence_category": "SBM-007_sampling",
   "description": "Resource cleanup trajectory gap detected",
   "timestamp": "2026-01-25T17:22:33.789Z",
   "severity": "medium",

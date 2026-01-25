@@ -1,5 +1,6 @@
 {
-  "violation_type": "SBM-009_numerical",
+  "violation_type": "numerical_stability_violation",
+  "evidence_category": "SBM-009_numerical",
   "description": "Integer overflow drift envelope violation",
   "timestamp": "2026-01-25T16:10:55.321Z",
   "severity": "high",
@@ -25,9 +26,11 @@
   },
   "drift_analysis": {
     "iterations": 42949672,
-    "drift_rate_per_iteration": 0.1,
-    "accumulated_drift": 4294967.2,
-    "threshold_exceeded": true
+    "increment_per_iteration": 1,
+    "accumulated_value": 42949672,
+    "expected_final_value": 4294967200,
+    "drift_detected": true,
+    "drift_source": "floating_point_accumulation_error"
   },
   "mitigation": "Overflow detection prevented integer wraparound",
   "status": "prevented"

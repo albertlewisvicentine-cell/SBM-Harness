@@ -1,5 +1,6 @@
 {
-  "violation_type": "SBM-001_spatial",
+  "violation_type": "spatial_memory_violation",
+  "evidence_category": "SBM-001_spatial",
   "description": "Array bounds overflow detected",
   "timestamp": "2026-01-25T19:30:42.123Z",
   "severity": "critical",

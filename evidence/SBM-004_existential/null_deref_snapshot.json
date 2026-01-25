@@ -1,5 +1,6 @@
 {
-  "violation_type": "SBM-004_existential",
+  "violation_type": "existential_pointer_violation",
+  "evidence_category": "SBM-004_existential",
   "description": "Null pointer dereference attempt detected",
   "timestamp": "2026-01-25T18:45:17.456Z",
   "severity": "critical",

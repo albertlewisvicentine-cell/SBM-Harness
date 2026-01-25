@@ -1,5 +1,6 @@
 {
-  "snapshot_type": "SBM-010_observability",
+  "snapshot_type": "observability_state_snapshot",
+  "evidence_category": "SBM-010_observability",
   "description": "Atomic state snapshot for error propagation validation",
   "timestamp": "2026-01-25T15:05:28.654Z",
   "snapshot_id": "snap_0x7f4a2c1b8e40",
