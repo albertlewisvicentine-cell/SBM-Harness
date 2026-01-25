@@ -1,0 +1,49 @@
+{
+  "snapshot_type": "observability_state_snapshot",
+  "evidence_category": "SBM-010_observability",
+  "description": "Atomic state snapshot for error propagation validation",
+  "timestamp": "2026-01-25T15:05:28.654Z",
+  "snapshot_id": "snap_0x7f4a2c1b8e40",
+  "system_state": {
+    "active_guards": 12,
+    "pending_validations": 3,
+    "error_count": 0,
+    "warning_count": 2
+  },
+  "call_stack": [
+    {
+      "depth": 0,
+      "function": "main",
+      "file": "tests/fault_injection.c",
+      "line": 42,
+      "status": "SBM_OK"
+    },
+    {
+      "depth": 1,
+      "function": "run_validation_suite",
+      "file": "tests/fault_injection.c",
+      "line": 178,
+      "status": "SBM_OK"
+    },
+    {
+      "depth": 2,
+      "function": "test_error_propagation",
+      "file": "tests/fault_injection.c",
+      "line": 223,
+      "status": "SBM_OK"
+    }
+  ],
+  "memory_regions": {
+    "stack_start": "0x7ffd8c2a0000",
+    "stack_end": "0x7ffd8c2c0000",
+    "heap_allocated": 4096,
+    "guard_metadata_size": 256
+  },
+  "validation_results": {
+    "null_checks": 42,
+    "bounds_checks": 38,
+    "loop_bounds": 15,
+    "status_propagations": 58,
+    "total_checks": 153
+  }
+}

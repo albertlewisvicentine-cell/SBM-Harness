@@ -1,0 +1,25 @@
+{
+  "violation_type": "spatial_memory_violation",
+  "evidence_category": "SBM-001_spatial",
+  "description": "Array bounds overflow detected",
+  "timestamp": "2026-01-25T19:30:42.123Z",
+  "severity": "critical",
+  "location": {
+    "file": "src/state_manager.c",
+    "line": 87,
+    "function": "sbm_snapshot_state"
+  },
+  "details": {
+    "array_name": "snapshot_buffer",
+    "declared_size": 256,
+    "attempted_index": 300,
+    "access_type": "write"
+  },
+  "stack_trace": [
+    "sbm_snapshot_state+0x42",
+    "save_checkpoint+0x1a",
+    "main+0x7c"
+  ],
+  "mitigation": "GUARD_INDEX macro prevented out-of-bounds access",
+  "status": "prevented"
+}

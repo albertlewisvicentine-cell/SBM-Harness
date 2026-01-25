@@ -1,0 +1,30 @@
+{
+  "violation_type": "existential_pointer_violation",
+  "evidence_category": "SBM-004_existential",
+  "description": "Null pointer dereference attempt detected",
+  "timestamp": "2026-01-25T18:45:17.456Z",
+  "severity": "critical",
+  "location": {
+    "file": "tests/fault_injection.c",
+    "line": 142,
+    "function": "test_null_pointer_guard"
+  },
+  "details": {
+    "pointer_name": "data_ptr",
+    "pointer_value": "0x0",
+    "operation": "dereference_read",
+    "expected_type": "int*"
+  },
+  "stack_trace": [
+    "test_null_pointer_guard+0x2e",
+    "run_fault_injection_tests+0x54",
+    "main+0x18"
+  ],
+  "guard_result": {
+    "macro": "GUARD_PTR",
+    "action": "early_return",
+    "error_code": "SBM_ERR_NULL"
+  },
+  "mitigation": "GUARD_PTR macro prevented null dereference",
+  "status": "prevented"
+}

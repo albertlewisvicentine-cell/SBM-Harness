@@ -1,0 +1,28 @@
+{
+  "violation_type": "resource_sampling_violation",
+  "evidence_category": "SBM-007_sampling",
+  "description": "Resource cleanup trajectory gap detected",
+  "timestamp": "2026-01-25T17:22:33.789Z",
+  "severity": "medium",
+  "location": {
+    "file": "src/core_guards.c",
+    "line": 203,
+    "function": "cleanup_resources"
+  },
+  "details": {
+    "resource_type": "file_descriptor",
+    "allocation_timestamp": "2026-01-25T17:22:31.100Z",
+    "expected_cleanup_timestamp": "2026-01-25T17:22:32.500Z",
+    "actual_cleanup_timestamp": "2026-01-25T17:22:33.789Z",
+    "gap_duration_ms": 1289,
+    "threshold_ms": 1000
+  },
+  "trajectory": {
+    "allocated_resources": 5,
+    "freed_resources": 5,
+    "leaked_resources": 0,
+    "delayed_cleanup_resources": ["fd_42"]
+  },
+  "mitigation": "Automatic resource tracking detected gap",
+  "status": "detected"
+}

@@ -1,0 +1,13 @@
+[2026-01-25T17:22:31.100] RESOURCE_ALLOC: fd=42 type=file_descriptor path=/tmp/test_data.bin
+[2026-01-25T17:22:31.250] RESOURCE_ALLOC: fd=43 type=file_descriptor path=/tmp/checkpoint.dat
+[2026-01-25T17:22:31.400] RESOURCE_ALLOC: fd=44 type=file_descriptor path=/dev/null
+[2026-01-25T17:22:31.550] RESOURCE_ALLOC: fd=45 type=file_descriptor path=/tmp/output.log
+[2026-01-25T17:22:31.700] RESOURCE_ALLOC: fd=46 type=file_descriptor path=/tmp/metrics.csv
+[2026-01-25T17:22:32.100] RESOURCE_FREE: fd=43 duration_ms=850
+[2026-01-25T17:22:32.300] RESOURCE_FREE: fd=44 duration_ms=900
+[2026-01-25T17:22:32.600] RESOURCE_FREE: fd=45 duration_ms=1050
+[2026-01-25T17:22:32.900] RESOURCE_FREE: fd=46 duration_ms=1200
+[2026-01-25T17:22:33.789] MONITOR_WARNING: Resource fd=42 still allocated after 2689ms
+[2026-01-25T17:22:33.789] TRAJECTORY_GAP: Expected cleanup window exceeded by 1289ms
+[2026-01-25T17:22:33.789] RESOURCE_FREE: fd=42 duration_ms=2689
+[2026-01-25T17:22:33.790] CLEANUP_COMPLETE: total_resources=5 freed=5 leaked=0 max_gap_ms=1289
