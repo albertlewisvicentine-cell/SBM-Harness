@@ -1,5 +1,5 @@
-iteration,counter_value,drift_amount,safety_margin,status
-0,4294967000,0,295,safe
-1,4294967100,0,195,safe
-2,4294967200,0,95,warning
-3,4294967300,0,-5,overflow_detected
+iteration,counter_value,safety_margin_remaining,status
+0,4294967000,295,safe
+1,4294967100,195,safe
+2,4294967200,95,warning
+3,4294967300,-5,overflow_detected

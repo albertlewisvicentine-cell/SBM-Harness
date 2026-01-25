@@ -29,7 +29,7 @@
     "violation_would_occur_at": 4294967300
   },
   "loop_analysis": {
-    "total_iterations_so_far": 2,
+    "total_iterations_so_far": 3,
     "increment_per_iteration": 100,
     "next_iteration_would_overflow": true,
     "detection_mechanism": "pre_increment_bounds_check",
