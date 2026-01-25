@@ -14,6 +14,7 @@
     "variable_type": "uint32_t",
     "initial_value": 4294967200,
     "increment": 100,
+    "current_value": 4294967200,
     "attempted_value": 4294967300,
     "max_safe_value": 4294967295,
     "overflow_amount": 5
@@ -22,15 +23,14 @@
     "lower_bound": 0,
     "upper_bound": 4294967295,
     "safety_margin": 100,
+    "safe_upper_limit": 4294967195,
     "violation_point": 4294967300
   },
-  "drift_analysis": {
-    "iterations": 42949672,
-    "increment_per_iteration": 1,
-    "accumulated_value": 42949672,
-    "expected_final_value": 4294967200,
-    "drift_detected": true,
-    "drift_source": "floating_point_accumulation_error"
+  "loop_analysis": {
+    "loop_iterations_before_overflow": 1,
+    "increment_per_iteration": 100,
+    "overflow_would_occur_at_iteration": 1,
+    "detection_mechanism": "pre_increment_bounds_check"
   },
   "mitigation": "Overflow detection prevented integer wraparound",
   "status": "prevented"
