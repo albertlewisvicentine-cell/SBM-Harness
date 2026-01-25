@@ -1,4 +1,9 @@
 name: Copilot Agent Validation Gate
+
+# Minimal permissions for security
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [ main ]
@@ -9,6 +14,8 @@ jobs:
   # GATE 1: PARITY (The "Did I break the implementation?" check)
   reproducibility-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Environment
@@ -31,6 +38,8 @@ jobs:
   statistical-safety-gate:
     needs: reproducibility-check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
