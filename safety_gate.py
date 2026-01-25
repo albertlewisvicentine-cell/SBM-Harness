@@ -78,18 +78,9 @@ def main():
     # Count failures
     total_trials = len(results)
     failures = sum(1 for r in results if r.get('failed', False))
-    successes = total_trials - failures
     
-    # Calculate failure rate and Wilson upper bound
+    # Calculate failure rate and Wilson upper bound for failures
     failure_rate = failures / total_trials
-    p_failure_upper = wilson_upper_bound(successes, total_trials, args.confidence)
-    
-    # The Wilson upper bound on success probability is the lower bound on failure probability
-    # So we need to convert: upper bound of p_failure = 1 - lower bound of p_success
-    # Actually, we want the upper bound of the failure probability
-    p_failure_wilson_upper = 1 - wilson_upper_bound(successes, total_trials, args.confidence)
-    
-    # Correct calculation: upper bound of failure probability
     failures_wilson_upper = wilson_upper_bound(failures, total_trials, args.confidence)
     
     print(f"\n{'='*60}")

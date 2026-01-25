@@ -40,7 +40,6 @@ def run_single_trial(seed, num_steps=1000):
         dict with trial results including failure count
     """
     rng = SimpleLCG(seed)
-    rng = SimpleLCG(seed)
     
     buffer_size = 100
     buffer_used = 0
