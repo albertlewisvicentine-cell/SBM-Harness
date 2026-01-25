@@ -1,0 +1,35 @@
+{
+  "metadata_version": "1.0",
+  "snapshot_id": "snap_0x7f4a2c1b8e40",
+  "created_at": "2026-01-25T15:05:28.654Z",
+  "snapshot_type": "error_propagation_validation",
+  "system_info": {
+    "platform": "x86_64-linux-gnu",
+    "compiler": "gcc 11.4.0",
+    "build_type": "debug",
+    "harness_version": "1.0.0"
+  },
+  "capture_settings": {
+    "include_stack_trace": true,
+    "include_memory_map": true,
+    "include_register_state": false,
+    "atomic_capture": true,
+    "capture_duration_us": 124
+  },
+  "statistics": {
+    "total_snapshots": 157,
+    "snapshot_size_bytes": 8192,
+    "compression": "none",
+    "integrity_check": "sha256:a3f5b8c9d2e1..."
+  },
+  "related_snapshots": [
+    "snap_0x7f4a2c1b8d20",
+    "snap_0x7f4a2c1b8c00"
+  ],
+  "tags": [
+    "error_propagation",
+    "status_validation",
+    "SBM-010",
+    "fault_injection_test"
+  ]
+}

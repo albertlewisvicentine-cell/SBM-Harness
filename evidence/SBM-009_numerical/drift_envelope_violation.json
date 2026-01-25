@@ -1,0 +1,34 @@
+{
+  "violation_type": "SBM-009_numerical",
+  "description": "Integer overflow drift envelope violation",
+  "timestamp": "2026-01-25T16:10:55.321Z",
+  "severity": "high",
+  "location": {
+    "file": "tests/unit_tests.c",
+    "line": 256,
+    "function": "test_loop_bound_guard"
+  },
+  "details": {
+    "variable_name": "counter",
+    "variable_type": "uint32_t",
+    "initial_value": 4294967200,
+    "increment": 100,
+    "attempted_value": 4294967300,
+    "max_safe_value": 4294967295,
+    "overflow_amount": 5
+  },
+  "envelope": {
+    "lower_bound": 0,
+    "upper_bound": 4294967295,
+    "safety_margin": 100,
+    "violation_point": 4294967300
+  },
+  "drift_analysis": {
+    "iterations": 42949672,
+    "drift_rate_per_iteration": 0.1,
+    "accumulated_drift": 4294967.2,
+    "threshold_exceeded": true
+  },
+  "mitigation": "Overflow detection prevented integer wraparound",
+  "status": "prevented"
+}
