@@ -266,6 +266,75 @@ sbm_status_t high_level_operation(void) {
 
 ---
 
+## Statistical Safety Gate Methodology
+
+### Wilson Upper Confidence Interval
+
+The SBM-Harness uses the **Wilson score confidence interval** for statistical validation of algorithm safety. This method is superior to normal approximation methods, especially for:
+
+- **Small sample sizes**: More accurate with limited trials
+- **Extreme probabilities**: Handles rare events better (p near 0 or 1)
+- **Conservative bounds**: Provides safer estimates than simple averages
+
+#### Why Wilson Over Normal Approximation?
+
+The Wilson interval adjusts for the fact that binomial proportions have bounded support [0,1], while the normal approximation can produce nonsensical bounds outside this range. For safety-critical systems, this mathematical rigor is essential.
+
+#### Formula and Implementation
+
+The Wilson upper bound for failure probability is calculated as:
+
+```
+p_upper = (center + margin)
+where:
+  center = (p̂ + z²/(2n)) / (1 + z²/n)
+  margin = (z / (1 + z²/n)) * sqrt(p̂(1-p̂)/n + z²/(4n²))
+  p̂ = observed failure rate (failures/trials)
+  z = z-score for confidence level (1.96 for 95%)
+  n = number of trials
+```
+
+This is implemented in `safety_gate.py:wilson_upper_bound()`.
+
+#### Critical Thresholds (T_CRIT)
+
+The safety gate uses configurable thresholds for maximum acceptable failure probability:
+
+- **Default: p_max = 0.01 (1%)**: For general-purpose safety validation
+- **High-reliability: p_max = 0.001 (0.1%)**: For safety-critical applications
+- **Prototype: p_max = 0.05 (5%)**: For early development testing
+
+These thresholds represent the **upper bound** of the confidence interval, not the observed rate. This conservative approach ensures that even with measurement uncertainty, the true failure rate is acceptably low.
+
+#### Example Interpretation
+
+```
+Total trials: 1000
+Failures: 5
+Observed failure rate: 0.005 (0.5%)
+Wilson CI upper bound (95%): 0.0089 (0.89%)
+Threshold (p_max): 0.01 (1%)
+
+Result: PASS (0.0089 < 0.01)
+```
+
+This means: *"We are 95% confident that the true failure rate is below 0.89%, which meets our safety requirement of <1%."*
+
+Even though we only observed 0.5% failures, the Wilson method accounts for sampling uncertainty and provides a conservative upper bound.
+
+#### Z-Score Confidence Levels
+
+The implementation supports multiple confidence levels:
+
+- **90% confidence**: z = 1.645
+- **95% confidence**: z = 1.96 (default)
+- **99% confidence**: z = 2.576
+- **99.9% confidence**: z = 3.291
+
+Higher confidence levels produce wider intervals (more conservative), which is appropriate for safety-critical applications.
+
+---
+
 ## Verification and Validation
 
 ### Static Analysis

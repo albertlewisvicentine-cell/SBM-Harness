@@ -32,6 +32,16 @@ jobs:
         run: |
           # Fails if C doesn't match Python within rtol
           python repro_compare.py py_trace.jsonl c_trace.jsonl --rtol 1e-7
+      
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: repro-check-artifacts
+          path: |
+            py_trace.jsonl
+            c_trace.jsonl
+          retention-days: 7
 
   # GATE 2: STATISTICAL SAFETY (The "Is the algorithm still safe?" check)
   # Only runs if Gate 1 passes to save compute time
@@ -56,3 +66,12 @@ jobs:
         run: |
           # Fails if p_failure (upper bound) > 0.01 (1%)
           python safety_gate.py results.jsonl --p_max 0.01
+      
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: safety-gate-artifacts
+          path: |
+            results.jsonl
+          retention-days: 7
