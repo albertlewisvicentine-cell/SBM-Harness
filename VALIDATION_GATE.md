@@ -32,8 +32,8 @@ This gate:
 - `.github/workflows/validation-gate.yml` - GitHub Actions workflow definition
 
 ### Simulation Scripts
-- `simulation.py` - Python reference implementation with NumPy-based RNG
-- `sim.c` - C implementation with MT19937 RNG for cross-platform reproducibility
+- `simulation.py` - Python reference implementation with Simple LCG
+- `sim.c` - C implementation with matching LCG for exact reproducibility
 - `repro_compare.py` - Parity comparison tool (checks Python vs C outputs)
 
 ### Statistical Analysis Scripts
@@ -85,11 +85,17 @@ If the safety gate fails:
 ## Implementation Notes
 
 ### Random Number Generation
-- **Python**: Uses NumPy's MT19937 implementation
-- **C**: Custom MT19937 implementation matching NumPy's behavior
-- Both are seeded identically for reproducibility
+- **Python**: Uses a simple Linear Congruential Generator (LCG) with parameters from Numerical Recipes
+- **C**: Identical LCG implementation for exact cross-platform reproducibility
+- Both are seeded identically for perfect reproducibility
 
-**Known Limitation**: The current C implementation may not produce byte-for-byte identical output to NumPy due to subtle differences in the `randint` sampling method. This is a work in progress.
+The LCG uses:
+- `a = 1664525`
+- `c = 1013904223`  
+- `m = 2^32`
+- Formula: `state = (a * state + c) mod m`
+
+This provides deterministic, cross-platform reproducible random numbers that match exactly between Python and C.
 
 ### Wilson Confidence Interval
 The safety gate uses the Wilson score interval rather than the normal approximation because:
@@ -122,8 +128,7 @@ This allows the GitHub Actions workflow to fail fast on errors.
 ## Dependencies
 
 ### Python
-- Python 3.11+
-- NumPy
+- Python 3.11+ (no external dependencies)
 
 ### C
 - GCC with C11 support
@@ -131,7 +136,6 @@ This allows the GitHub Actions workflow to fail fast on errors.
 
 ## Future Enhancements
 
-- [ ] Perfect Python/C RNG parity
 - [ ] Configurable safety thresholds per file/module
 - [ ] Integration with existing test suite
 - [ ] Performance benchmarking gate

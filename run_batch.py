@@ -7,7 +7,29 @@ Runs multiple trials with different seeds to build a distribution.
 import argparse
 import json
 import sys
-import numpy as np
+
+
+class SimpleLCG:
+    """
+    Simple Linear Congruential Generator for cross-platform reproducibility.
+    Uses parameters from Numerical Recipes: a=1664525, c=1013904223, m=2^32
+    """
+    def __init__(self, seed):
+        self.state = seed & 0xFFFFFFFF
+        
+    def next_uint32(self):
+        """Generate next uint32 value."""
+        self.state = (1664525 * self.state + 1013904223) & 0xFFFFFFFF
+        return self.state
+    
+    def randint(self, min_val, max_val):
+        """Generate random integer in [min_val, max_val)."""
+        range_size = max_val - min_val
+        return min_val + (self.next_uint32() % range_size)
+    
+    def random(self):
+        """Generate random float in [0, 1)."""
+        return self.next_uint32() / (2**32)
 
 
 def run_single_trial(seed, num_steps=1000):
@@ -17,7 +39,8 @@ def run_single_trial(seed, num_steps=1000):
     Returns:
         dict with trial results including failure count
     """
-    np.random.seed(seed)
+    rng = SimpleLCG(seed)
+    rng = SimpleLCG(seed)
     
     buffer_size = 100
     buffer_used = 0
@@ -26,7 +49,7 @@ def run_single_trial(seed, num_steps=1000):
     
     for step in range(num_steps):
         # Simulate random memory allocation request (1-10 units)
-        request = np.random.randint(1, 11)
+        request = rng.randint(1, 11)
         
         # Try to allocate
         if buffer_used + request <= buffer_size:
@@ -38,8 +61,8 @@ def run_single_trial(seed, num_steps=1000):
             # For this safety gate, we consider it a success (guard worked)
         
         # Random deallocation (10% chance if buffer is not empty)
-        if buffer_used > 0 and np.random.random() < 0.1:
-            dealloc = min(buffer_used, np.random.randint(1, 11))
+        if buffer_used > 0 and rng.random() < 0.1:
+            dealloc = min(buffer_used, rng.randint(1, 11))
             buffer_used -= dealloc
     
     # Define failure criteria: buffer corruption or invalid state
