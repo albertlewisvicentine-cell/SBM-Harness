@@ -136,10 +136,10 @@ The validation gate runs automatically on:
 
 ### Artifact Upload on Failure
 
-When a validation gate fails, the workflow automatically uploads diagnostic artifacts:
+When a validation gate fails, the workflow automatically uploads diagnostic artifacts to the `build/repro/` directory:
 
-- **Reproducibility Check Failures**: Uploads both `py_trace.jsonl` and `c_trace.jsonl` for manual comparison
-- **Safety Gate Failures**: Uploads `results.jsonl` for statistical analysis
+- **Reproducibility Check Failures**: Artifact `repro-traces` contains `py_trace.jsonl` and `c_trace.jsonl` for manual comparison
+- **Safety Gate Failures**: Artifact `safety-gate-results` contains `results.jsonl` for statistical analysis
 
 Artifacts are retained for 7 days and can be downloaded from the GitHub Actions run page.
 
