@@ -1,0 +1,58 @@
+name: Copilot Agent Validation Gate
+
+# Minimal permissions for security
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches: [ main ]
+  # Allows Copilot to trigger this manually during task execution
+  workflow_dispatch:
+
+jobs:
+  # GATE 1: PARITY (The "Did I break the implementation?" check)
+  reproducibility-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Environment
+        run: |
+          sudo apt-get install -y gcc make
+      
+      - name: Run Python & C Simulations
+        run: |
+          python simulation.py --seed 42 --out py_trace.jsonl
+          gcc -O3 sim.c -o sim_c -lm
+          ./sim_c --seed 42 --out c_trace.jsonl
+          
+      - name: Verify Parity
+        run: |
+          # Fails if C doesn't match Python within rtol
+          python repro_compare.py py_trace.jsonl c_trace.jsonl --rtol 1e-7
+
+  # GATE 2: STATISTICAL SAFETY (The "Is the algorithm still safe?" check)
+  # Only runs if Gate 1 passes to save compute time
+  statistical-safety-gate:
+    needs: reproducibility-check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Batch Monte Carlo Simulation
+        run: |
+          # Run 1000 trials to get a solid distribution
+          python run_batch.py --trials 1000 --out results.jsonl
+
+      - name: Evaluate Wilson Upper Bound
+        run: |
+          # Fails if p_failure (upper bound) > 0.01 (1%)
+          python safety_gate.py results.jsonl --p_max 0.01

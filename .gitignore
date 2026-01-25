@@ -56,3 +56,13 @@ dkms.conf
 
 # Build directory
 build/
+
+# Simulation outputs
+*.jsonl
+sim_c
+test_rng*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
