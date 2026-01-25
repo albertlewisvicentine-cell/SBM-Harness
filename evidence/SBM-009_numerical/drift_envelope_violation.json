@@ -12,25 +12,28 @@
   "details": {
     "variable_name": "counter",
     "variable_type": "uint32_t",
-    "initial_value": 4294967200,
+    "initial_value": 4294967000,
     "increment": 100,
     "current_value": 4294967200,
-    "attempted_value": 4294967300,
-    "max_safe_value": 4294967295,
-    "overflow_amount": 5
+    "next_increment_would_be": 4294967300,
+    "max_value": 4294967295,
+    "overflow_amount_if_incremented": 5,
+    "state": "at_warning_threshold"
   },
   "envelope": {
     "lower_bound": 0,
     "upper_bound": 4294967295,
     "safety_margin": 100,
     "safe_upper_limit": 4294967195,
-    "violation_point": 4294967300
+    "current_margin": 95,
+    "violation_would_occur_at": 4294967300
   },
   "loop_analysis": {
-    "loop_iterations_before_overflow": 1,
+    "total_iterations_so_far": 2,
     "increment_per_iteration": 100,
-    "overflow_would_occur_at_iteration": 1,
-    "detection_mechanism": "pre_increment_bounds_check"
+    "next_iteration_would_overflow": true,
+    "detection_mechanism": "pre_increment_bounds_check",
+    "action_taken": "loop_termination_before_overflow"
   },
   "mitigation": "Overflow detection prevented integer wraparound",
   "status": "prevented"
