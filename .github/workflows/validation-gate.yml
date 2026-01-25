@@ -24,14 +24,23 @@ jobs:
       
       - name: Run Python & C Simulations
         run: |
-          python simulation.py --seed 42 --out py_trace.jsonl
-          gcc -O3 sim.c -o sim_c -lm
-          ./sim_c --seed 42 --out c_trace.jsonl
+          mkdir -p build/repro
+          python simulation.py --seed 42 --out build/repro/py_trace.jsonl
+          gcc -O3 -std=c11 -Wall -Wextra sim.c -o sim_c -lm
+          ./sim_c --seed 42 --out build/repro/c_trace.jsonl
           
       - name: Verify Parity
         run: |
           # Fails if C doesn't match Python within rtol
-          python repro_compare.py py_trace.jsonl c_trace.jsonl --rtol 1e-7
+          python repro_compare.py build/repro/py_trace.jsonl build/repro/c_trace.jsonl --rtol 1e-7
+      
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repro-traces
+          path: build/repro/
+          retention-days: 7
 
   # GATE 2: STATISTICAL SAFETY (The "Is the algorithm still safe?" check)
   # Only runs if Gate 1 passes to save compute time
@@ -50,9 +59,18 @@ jobs:
       - name: Batch Monte Carlo Simulation
         run: |
           # Run 1000 trials to get a solid distribution
-          python run_batch.py --trials 1000 --out results.jsonl
+          mkdir -p build/repro
+          python run_batch.py --trials 1000 --out build/repro/results.jsonl
 
       - name: Evaluate Wilson Upper Bound
         run: |
           # Fails if p_failure (upper bound) > 0.01 (1%)
-          python safety_gate.py results.jsonl --p_max 0.01
+          python safety_gate.py build/repro/results.jsonl --p_max 0.01
+      
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-gate-results
+          path: build/repro/
+          retention-days: 7

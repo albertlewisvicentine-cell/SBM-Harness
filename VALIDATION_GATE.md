@@ -44,6 +44,23 @@ This gate:
 
 ### Running Locally
 
+#### Using Makefile (Recommended)
+
+The project includes Makefile targets for convenience:
+
+```bash
+# Run reproducibility check (Gate 1)
+make repro-check
+
+# Run statistical safety gate (Gate 2)
+make safety-gate
+
+# Run both gates
+make repro-check && make safety-gate
+```
+
+#### Manual Execution
+
 #### Test Reproducibility (Gate 1)
 ```bash
 # Run Python simulation
@@ -116,6 +133,15 @@ upper_bound = (p̂ + z²/2n + z√(p̂(1-p̂)/n + z²/4n²)) / (1 + z²/n)
 The validation gate runs automatically on:
 - Pull requests to `main` branch
 - Manual workflow dispatch (for testing)
+
+### Artifact Upload on Failure
+
+When a validation gate fails, the workflow automatically uploads diagnostic artifacts to the `build/repro/` directory:
+
+- **Reproducibility Check Failures**: Artifact `repro-traces` contains `py_trace.jsonl` and `c_trace.jsonl` for manual comparison
+- **Safety Gate Failures**: Artifact `safety-gate-results` contains `results.jsonl` for statistical analysis
+
+Artifacts are retained for 7 days and can be downloaded from the GitHub Actions run page.
 
 ## Exit Codes
 
