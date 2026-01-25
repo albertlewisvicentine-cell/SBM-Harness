@@ -25,7 +25,7 @@ jobs:
       - name: Run Python & C Simulations
         run: |
           python simulation.py --seed 42 --out py_trace.jsonl
-          gcc -O3 sim.c -o sim_c -lm
+          gcc -O3 -std=c11 -Wall -Wextra sim.c -o sim_c -lm
           ./sim_c --seed 42 --out c_trace.jsonl
           
       - name: Verify Parity

@@ -4,7 +4,11 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -O2 -Iinclude -Itests
+SIM_CFLAGS = -O3 -std=c11 -Wall -Wextra
 BUILD_DIR = build
+
+# Reproducibility test configuration
+REPRO_SEED = 42
 
 # Source files
 # Note: state_manager.c is excluded to avoid duplicate symbol definitions.
@@ -50,16 +54,16 @@ $(UNIT_TESTS): tests/unit_tests.c $(OBJ_FILES)
 unit_tests: $(UNIT_TESTS)
 
 # Build C simulation for reproducibility checking
-$(SIM_C): sim.c
-	$(CC) -O3 -std=c11 -Wall -Wextra -o $@ $< -lm
+$(SIM_C): sim.c | $(BUILD_DIR)
+	$(CC) $(SIM_CFLAGS) -o $@ $< -lm
 
 # Run reproducibility check (compares Python vs C simulation)
 .PHONY: repro-check
 repro-check: $(SIM_C)
 	@echo "=== Running reproducibility check ==="
 	@mkdir -p $(BUILD_DIR)/repro
-	python3 simulation.py --seed 42 --out $(BUILD_DIR)/repro/py_trace.jsonl
-	$(SIM_C) --seed 42 --out $(BUILD_DIR)/repro/c_trace.jsonl
+	python3 simulation.py --seed $(REPRO_SEED) --out $(BUILD_DIR)/repro/py_trace.jsonl
+	$(SIM_C) --seed $(REPRO_SEED) --out $(BUILD_DIR)/repro/c_trace.jsonl
 	python3 repro_compare.py $(BUILD_DIR)/repro/py_trace.jsonl $(BUILD_DIR)/repro/c_trace.jsonl --rtol 1e-7
 	@echo "=== Reproducibility check passed ==="
 
