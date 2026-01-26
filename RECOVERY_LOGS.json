@@ -1,0 +1,166 @@
+[
+  {
+    "event_type": "FAULT_INJECTION",
+    "timestamp": "2026-01-25T19:30:42.123Z",
+    "gsn_ref": ["G2", "G6"],
+    "fault_id": "FI-001",
+    "description": "Array bounds overflow injection",
+    "location": {
+      "file": "src/state_manager.c",
+      "line": 87,
+      "function": "sbm_snapshot_state"
+    },
+    "injected_fault": {
+      "type": "out_of_bounds_access",
+      "array_size": 256,
+      "attempted_index": 300
+    },
+    "outcome": "DETECTED_AND_RECOVERED",
+    "detection_mechanism": "GUARD_INDEX",
+    "recovery_action": "Function returned SBM_ERR_OOB",
+    "severity": "critical"
+  },
+  {
+    "event_type": "GUARD_TRIGGER",
+    "timestamp": "2026-01-25T19:30:42.124Z",
+    "gsn_ref": ["G2", "G6"],
+    "guard_type": "GUARD_INDEX",
+    "outcome": "DETECTED_AND_RECOVERED",
+    "details": {
+      "index": 300,
+      "max_length": 256,
+      "violation_amount": 44
+    }
+  },
+  {
+    "event_type": "FAULT_INJECTION",
+    "timestamp": "2026-01-25T19:32:15.456Z",
+    "gsn_ref": ["G1"],
+    "fault_id": "FI-002",
+    "description": "NULL pointer dereference injection",
+    "location": {
+      "file": "tests/unit_tests.c",
+      "line": 142,
+      "function": "test_null_guard"
+    },
+    "injected_fault": {
+      "type": "null_pointer",
+      "pointer_name": "test_data"
+    },
+    "outcome": "DETECTED_AND_RECOVERED",
+    "detection_mechanism": "GUARD_PTR",
+    "recovery_action": "Function returned SBM_ERR_NULL",
+    "severity": "critical"
+  },
+  {
+    "event_type": "GUARD_TRIGGER",
+    "timestamp": "2026-01-25T19:32:15.457Z",
+    "gsn_ref": ["G1"],
+    "guard_type": "GUARD_PTR",
+    "outcome": "DETECTED_AND_RECOVERED",
+    "details": {
+      "pointer": "test_data",
+      "expected": "valid_address",
+      "actual": "NULL"
+    }
+  },
+  {
+    "event_type": "FAULT_INJECTION",
+    "timestamp": "2026-01-25T16:10:55.321Z",
+    "gsn_ref": ["G5"],
+    "fault_id": "FI-003",
+    "description": "Integer overflow injection",
+    "location": {
+      "file": "tests/unit_tests.c",
+      "line": 256,
+      "function": "test_loop_bound_guard"
+    },
+    "injected_fault": {
+      "type": "integer_overflow",
+      "variable": "counter",
+      "initial_value": 4294967000,
+      "increment": 100
+    },
+    "outcome": "DETECTED_AND_RECOVERED",
+    "detection_mechanism": "pre_increment_bounds_check",
+    "recovery_action": "Loop terminated before overflow",
+    "severity": "high"
+  },
+  {
+    "event_type": "GUARD_TRIGGER",
+    "timestamp": "2026-01-25T16:10:55.322Z",
+    "gsn_ref": ["G5"],
+    "guard_type": "OVERFLOW_CHECK",
+    "outcome": "DETECTED_AND_RECOVERED",
+    "details": {
+      "variable": "counter",
+      "current_value": 4294967200,
+      "max_safe_value": 4294967195,
+      "action": "loop_termination"
+    }
+  },
+  {
+    "event_type": "FAULT_INJECTION",
+    "timestamp": "2026-01-25T14:22:30.789Z",
+    "gsn_ref": ["G3"],
+    "fault_id": "FI-004",
+    "description": "Unbounded loop injection",
+    "location": {
+      "file": "tests/fault_injection.c",
+      "line": 89,
+      "function": "test_loop_limit"
+    },
+    "injected_fault": {
+      "type": "infinite_loop",
+      "max_iterations": 1000
+    },
+    "outcome": "DETECTED_AND_RECOVERED",
+    "detection_mechanism": "CHECK_LOOP_LIMIT",
+    "recovery_action": "Function returned SBM_ERR_TIMEOUT",
+    "severity": "high"
+  },
+  {
+    "event_type": "GUARD_TRIGGER",
+    "timestamp": "2026-01-25T14:22:30.790Z",
+    "gsn_ref": ["G3"],
+    "guard_type": "CHECK_LOOP_LIMIT",
+    "outcome": "DETECTED_AND_RECOVERED",
+    "details": {
+      "iteration_count": 1001,
+      "max_allowed": 1000,
+      "exceeded_by": 1
+    }
+  },
+  {
+    "event_type": "FAULT_INJECTION",
+    "timestamp": "2026-01-25T13:45:18.234Z",
+    "gsn_ref": ["G4"],
+    "fault_id": "FI-005",
+    "description": "Error status ignored injection",
+    "location": {
+      "file": "tests/unit_tests.c",
+      "line": 198,
+      "function": "test_status_propagation"
+    },
+    "injected_fault": {
+      "type": "error_status",
+      "status_code": "SBM_ERR_INVALID"
+    },
+    "outcome": "DETECTED_AND_RECOVERED",
+    "detection_mechanism": "SBM_PROPAGATE_STATUS",
+    "recovery_action": "Error propagated to caller",
+    "severity": "medium"
+  },
+  {
+    "event_type": "GUARD_TRIGGER",
+    "timestamp": "2026-01-25T13:45:18.235Z",
+    "gsn_ref": ["G4"],
+    "guard_type": "SBM_PROPAGATE_STATUS",
+    "outcome": "DETECTED_AND_RECOVERED",
+    "details": {
+      "status": "SBM_ERR_INVALID",
+      "propagated": true,
+      "caller": "test_status_propagation"
+    }
+  }
+]

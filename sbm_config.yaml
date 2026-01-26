@@ -1,0 +1,41 @@
+# SBM-Harness Configuration
+# Environment settings and safety goals for audit reporting
+
+environment:
+  temperature: 298.15  # Kelvin
+  pressure: 101325     # Pascal
+  gravity: 9.80665     # m/s² (matches standard g)
+  max_iterations: 1000000
+  watchdog_timeout: 5.0  # seconds
+  memory_limit: 268435456  # bytes (256 MB)
+  
+safety_goals:
+  - id: "G1"
+    description: "All null pointer dereferences shall be detected and prevented"
+    gsn_ref: "SBM-000"
+    acceptance_criteria: "100% detection rate in fault injection tests"
+    
+  - id: "G2"
+    description: "All array bounds violations shall be detected and prevented"
+    gsn_ref: "SBM-002"
+    acceptance_criteria: "100% detection rate in fault injection tests"
+    
+  - id: "G3"
+    description: "All loop bounds shall be enforced with configurable limits"
+    gsn_ref: "SBM-005"
+    acceptance_criteria: "No unbounded loops, 100% timeout detection"
+    
+  - id: "G4"
+    description: "All error statuses shall be checked and propagated"
+    gsn_ref: "SBM-010"
+    acceptance_criteria: "No silent failures, full error traceability"
+    
+  - id: "G5"
+    description: "Numerical overflow violations shall be prevented"
+    gsn_ref: "SBM-009"
+    acceptance_criteria: "100% overflow detection before wraparound"
+    
+  - id: "G6"
+    description: "Spatial memory violations shall be prevented"
+    gsn_ref: "SBM-001"
+    acceptance_criteria: "100% spatial violation detection"
