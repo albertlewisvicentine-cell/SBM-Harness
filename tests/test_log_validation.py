@@ -215,6 +215,65 @@ class TestSBMLogValidator(unittest.TestCase):
         finally:
             temp_path.unlink()
     
+    def test_validate_log_file_single_object(self):
+        """Test validation of single JSON object (not array)."""
+        log = {
+            "schema_version": "1.0",
+            "event_type": "FAULT_INJECTION",
+            "timestamp": "2026-01-25T19:30:42.123Z"
+        }
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(log, f)  # Not an array, just a single object
+            temp_path = Path(f.name)
+        
+        try:
+            valid_count, errors = self.validator.validate_log_file(temp_path)
+            self.assertEqual(valid_count, 1)
+            self.assertEqual(len(errors), 0)
+        finally:
+            temp_path.unlink()
+    
+    def test_validate_log_file_invalid_json(self):
+        """Test validation handles invalid JSON gracefully."""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+            f.write('{"valid": "json"}\n')
+            f.write('invalid json here\n')  # Invalid line
+            f.write('{"another": "valid"}\n')
+            temp_path = Path(f.name)
+        
+        try:
+            valid_count, errors = self.validator.validate_log_file(temp_path)
+            # Should have 1 valid entry (first line might be invalid due to schema)
+            # and at least 1 error for the invalid JSON line
+            self.assertGreater(len(errors), 0)
+        finally:
+            temp_path.unlink()
+    
+    def test_validate_log_file_empty_lines(self):
+        """Test validation skips empty lines in JSONL."""
+        logs_with_empty = [
+            {"schema_version": "1.0", "event_type": "FAULT_INJECTION", 
+             "timestamp": "2026-01-25T19:30:42.123Z"},
+            {"schema_version": "1.0", "event_type": "GUARD_TRIGGER",
+             "timestamp": "2026-01-25T19:30:42.124Z"}
+        ]
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+            f.write('\n')  # Empty line
+            f.write(json.dumps(logs_with_empty[0]) + '\n')
+            f.write('\n')  # Another empty line
+            f.write(json.dumps(logs_with_empty[1]) + '\n')
+            f.write('\n')  # Trailing empty line
+            temp_path = Path(f.name)
+        
+        try:
+            valid_count, errors = self.validator.validate_log_file(temp_path)
+            self.assertEqual(valid_count, 2)
+            self.assertEqual(len(errors), 0)
+        finally:
+            temp_path.unlink()
+    
     def test_validate_log_entries_function(self):
         """Test the convenience function for validating log entries."""
         entries = [

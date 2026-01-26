@@ -140,6 +140,48 @@ class TestDeterministicSeeding(unittest.TestCase):
         # Should still be able to inject faults
         result = injector.inject_random_fault(0.5)
         self.assertIsInstance(result, bool)
+    
+    def test_zero_core_voltage_edge_case(self):
+        """Test behavior with zero core voltage."""
+        env = Environment(temp_kelvin=300.0, v_core_mv=0.0)
+        injector = PhysicsDerivedInjector(env, seed=42)
+        
+        # Zero voltage should give maximum probability
+        prob = injector.calculate_bit_flip_prob()
+        self.assertEqual(prob, 1.0)
+    
+    def test_very_low_voltage(self):
+        """Test with very low voltage."""
+        env = Environment(temp_kelvin=300.0, v_core_mv=50.0)
+        injector = PhysicsDerivedInjector(env, seed=42)
+        
+        prob = injector.calculate_bit_flip_prob()
+        self.assertGreater(prob, 0.0)
+        self.assertLessEqual(prob, 1.0)
+    
+    def test_extreme_temperature(self):
+        """Test with extreme temperatures."""
+        # Very low temperature
+        env_cold = Environment(temp_kelvin=1.0, v_core_mv=1000.0)
+        injector_cold = PhysicsDerivedInjector(env_cold, seed=42)
+        prob_cold = injector_cold.calculate_bit_flip_prob()
+        
+        # Very high temperature
+        env_hot = Environment(temp_kelvin=1000.0, v_core_mv=1000.0)
+        injector_hot = PhysicsDerivedInjector(env_hot, seed=42)
+        prob_hot = injector_hot.calculate_bit_flip_prob()
+        
+        # Higher temperature should have higher probability
+        self.assertGreater(prob_hot, prob_cold)
+    
+    def test_inject_fault_with_calculated_probability(self):
+        """Test inject_random_fault using calculated bit flip probability."""
+        env = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
+        injector = PhysicsDerivedInjector(env, seed=42)
+        
+        # Call without probability parameter - should use calculated
+        result = injector.inject_random_fault()
+        self.assertIsInstance(result, bool)
 
 
 if __name__ == '__main__':
