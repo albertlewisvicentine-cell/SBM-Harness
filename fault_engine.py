@@ -8,6 +8,8 @@ This module implements fault injection based on physical principles:
 """
 
 import math
+import random
+import os
 
 
 class PhysicsDerivedInjector:
@@ -33,7 +35,7 @@ class PhysicsDerivedInjector:
     SAFETY_MARGIN_RATIO = 0.2  # 20% of clock period reserved for setup/hold times
     TIMING_VIOLATION_INDICATOR = 1e-15  # 1 femtosecond - indicates timing closure violation
     
-    def __init__(self, env):
+    def __init__(self, env, seed=None):
         """
         Initialize the physics-derived injector.
         
@@ -43,8 +45,25 @@ class PhysicsDerivedInjector:
                 - v_core_mv: Core voltage in millivolts
                 - pcb_trace_length_m: PCB trace length in meters (optional)
                 - clock_period_s: Clock period in seconds (optional)
+            seed: Random seed for reproducibility. If None, tries SBM_FAULT_SEED env var,
+                  then falls back to None (non-deterministic)
         """
         self.env = env
+        
+        # Handle seed initialization for reproducibility
+        if seed is None:
+            seed = os.environ.get('SBM_FAULT_SEED')
+            if seed is not None:
+                seed = int(seed)
+        
+        self.seed = seed
+        
+        # Create a dedicated Random instance for this injector
+        # This ensures each injector has independent, reproducible state
+        if self.seed is not None:
+            self._rng = random.Random(self.seed)
+        else:
+            self._rng = random.Random()
     
     def calculate_bit_flip_prob(self):
         """
@@ -156,6 +175,31 @@ class PhysicsDerivedInjector:
             return self.TIMING_VIOLATION_INDICATOR
         
         return max_jitter
+    
+    def get_effective_seed(self):
+        """
+        Get the effective seed being used for this injector.
+        
+        Returns:
+            int or None: The seed value, or None if non-deterministic
+        """
+        return self.seed
+    
+    def inject_random_fault(self, fault_probability=None):
+        """
+        Decide whether to inject a fault based on probability.
+        
+        Args:
+            fault_probability: Probability of injecting fault (0.0-1.0).
+                              If None, uses calculated bit flip probability.
+        
+        Returns:
+            bool: True if fault should be injected, False otherwise
+        """
+        if fault_probability is None:
+            fault_probability = self.calculate_bit_flip_prob()
+        
+        return self._rng.random() < fault_probability
 
 
 class Environment:
@@ -188,11 +232,23 @@ if __name__ == "__main__":
     print("Physics-Derived Fault Injector Example")
     print("=" * 50)
     
+    # Example 0: Demonstrate reproducibility with seeding
+    print("\nScenario 0: Reproducibility with seeding")
+    env0 = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
+    injector0a = PhysicsDerivedInjector(env0, seed=42)
+    injector0b = PhysicsDerivedInjector(env0, seed=42)
+    print(f"  Both injectors use seed: {injector0a.get_effective_seed()}")
+    # Both should give same results
+    for i in range(3):
+        fault_a = injector0a.inject_random_fault(0.5)
+        fault_b = injector0b.inject_random_fault(0.5)
+        print(f"  Trial {i+1}: Injector A={fault_a}, Injector B={fault_b}, Match={fault_a==fault_b}")
+    
     # Example 1: Room temperature, 1.0V core
     env1 = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
-    injector1 = PhysicsDerivedInjector(env1)
+    injector1 = PhysicsDerivedInjector(env1, seed=12345)
     prob1 = injector1.calculate_bit_flip_prob()
-    print(f"\nScenario 1: T=300K, V_core=1.0V")
+    print(f"\nScenario 1: T=300K, V_core=1.0V, seed={injector1.get_effective_seed()}")
     print(f"  Bit flip probability: {prob1:.2e}")
     
     # Example 2: High temperature, lower voltage
