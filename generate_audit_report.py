@@ -38,6 +38,23 @@ def normalize_float(value: float, precision: int = 8) -> float:
     return round(value, precision)
 
 
+def _round_float_match(match: re.Match) -> str:
+    """
+    Helper function to round float matches in regex substitution.
+    
+    Args:
+        match: Regex match object containing a float
+        
+    Returns:
+        Rounded float as string (6 decimal places)
+    """
+    try:
+        num = float(match.group(0))
+        return f"{num:.6f}"
+    except ValueError:
+        return match.group(0)
+
+
 def normalize_report_for_snapshot(content: str) -> str:
     """
     Normalize report content for snapshot testing by removing/standardizing dynamic parts.
@@ -63,16 +80,9 @@ def normalize_report_for_snapshot(content: str) -> str:
     )
     
     # Round floating point numbers to 6 decimal places
-    def round_float_match(match):
-        try:
-            num = float(match.group(0))
-            return f"{num:.6f}"
-        except ValueError:
-            return match.group(0)
-    
     content = re.sub(
         r'\d+\.\d{7,}',
-        round_float_match,
+        _round_float_match,
         content
     )
     

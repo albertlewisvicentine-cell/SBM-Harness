@@ -111,17 +111,21 @@ class TestDeterministicSeeding(unittest.TestCase):
     
     def test_inject_random_fault_probability(self):
         """Test that inject_random_fault respects probability."""
-        env = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
-        injector = PhysicsDerivedInjector(env, seed=42)
-        
         # Test with probability 0 - should never inject
-        results_zero = [injector.inject_random_fault(0.0) for _ in range(100)]
+        injector_zero = PhysicsDerivedInjector(
+            Environment(temp_kelvin=300.0, v_core_mv=1000.0), 
+            seed=42
+        )
+        results_zero = [injector_zero.inject_random_fault(0.0) for _ in range(100)]
         self.assertTrue(all(not r for r in results_zero),
                        "Probability 0.0 should never inject faults")
         
         # Test with probability 1 - should always inject
-        injector2 = PhysicsDerivedInjector(env, seed=42)
-        results_one = [injector2.inject_random_fault(1.0) for _ in range(100)]
+        injector_one = PhysicsDerivedInjector(
+            Environment(temp_kelvin=300.0, v_core_mv=1000.0),
+            seed=42
+        )
+        results_one = [injector_one.inject_random_fault(1.0) for _ in range(100)]
         self.assertTrue(all(r for r in results_one),
                        "Probability 1.0 should always inject faults")
     

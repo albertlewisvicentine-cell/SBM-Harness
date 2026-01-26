@@ -6,7 +6,7 @@ Ensures backward compatibility and catches schema violations early.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 import jsonschema
 from jsonschema import validate, ValidationError
 
@@ -47,9 +47,9 @@ class SBMLogValidator:
             validate(instance=entry, schema=self.schema)
             return True
         except ValidationError as e:
-            raise ValidationError(f"Log entry validation failed: {e.message}")
+            raise ValidationError(f"Log entry validation failed: {str(e)}")
     
-    def validate_log_file(self, log_path: Path) -> tuple[int, List[str]]:
+    def validate_log_file(self, log_path: Path) -> Tuple[int, List[str]]:
         """
         Validate all entries in a log file.
         
@@ -89,7 +89,7 @@ class SBMLogValidator:
                 self.validate_entry(entry)
                 valid_count += 1
             except ValidationError as e:
-                errors.append(f"Entry {idx}: {e.message}")
+                errors.append(f"Entry {idx}: {str(e)}")
         
         return valid_count, errors
     
@@ -142,7 +142,7 @@ def validate_log_entries(log_entries: List[Dict[str, Any]],
         try:
             validator.validate_entry(entry)
         except ValidationError as e:
-            raise ValidationError(f"Entry {idx} validation failed: {e.message}")
+            raise ValidationError(f"Entry {idx} validation failed: {str(e)}")
     
     return True
 
