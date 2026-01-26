@@ -66,3 +66,6 @@ test_rng*
 __pycache__/
 *.pyc
 *.pyo
+
+# Auto-generated audit reports
+AUDIT_REPORT_AUTO.md
