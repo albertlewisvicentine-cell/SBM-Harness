@@ -18,11 +18,19 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
       - name: Set up Environment
         run: |
           sudo apt-get install -y gcc make
+          pip install -r requirements.txt
       
-      - name: Run Python & C Simulations
+      - name: Run Python & C Simulations with deterministic seed
+        env:
+          SBM_FAULT_SEED: 42
         run: |
           mkdir -p build/repro
           python simulation.py --seed 42 --out build/repro/py_trace.jsonl
@@ -42,10 +50,8 @@ jobs:
           path: build/repro/
           retention-days: 7
 
-  # GATE 2: STATISTICAL SAFETY (The "Is the algorithm still safe?" check)
-  # Only runs if Gate 1 passes to save compute time
-  statistical-safety-gate:
-    needs: reproducibility-check
+  # GATE 2: LOG SCHEMA VALIDATION
+  schema-validation:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,12 +61,57 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Validate RECOVERY_LOGS.json schema
+        run: |
+          python sbm_log_validator.py RECOVERY_LOGS.json
+      
+      - name: Check schema version compatibility
+        run: |
+          python -c "
+          import json
+          from pathlib import Path
+          from sbm_log_validator import SBMLogValidator
           
-      - name: Batch Monte Carlo Simulation
+          validator = SBMLogValidator()
+          with open('RECOVERY_LOGS.json') as f:
+              logs = json.load(f)
+          
+          incompatible = [i for i, log in enumerate(logs) if not validator.check_schema_version(log)]
+          if incompatible:
+              print(f'ERROR: {len(incompatible)} entries have incompatible schema versions')
+              exit(1)
+          else:
+              print(f'✓ All {len(logs)} entries have compatible schema version')
+          "
+
+  # GATE 3: STATISTICAL SAFETY (The "Is the algorithm still safe?" check)
+  # Only runs if Gate 1 passes to save compute time
+  statistical-safety-gate:
+    needs: reproducibility-check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SBM_FAULT_SEED: 1000
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Batch Monte Carlo Simulation with seeding
         run: |
           # Run 1000 trials to get a solid distribution
           mkdir -p build/repro
-          python run_batch.py --trials 1000 --out build/repro/results.jsonl
+          python run_batch.py --trials 1000 --out build/repro/results.jsonl --seed-base ${SBM_FAULT_SEED}
 
       - name: Evaluate Wilson Upper Bound
         run: |
@@ -73,4 +124,31 @@ jobs:
         with:
           name: safety-gate-results
           path: build/repro/
+          retention-days: 7
+
+  # GATE 4: AUDIT REPORT SNAPSHOT TEST
+  audit-report-snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Run audit report snapshot tests
+        run: |
+          PYTHONPATH=. python tests/test_audit_snapshots.py
+      
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report-diff
+          path: AUDIT_REPORT_AUTO.md
           retention-days: 7

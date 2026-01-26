@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/albertlewisvicentine-cell/SBM-Harness/schemas/sbm_log_entry.schema.json",
+  "title": "SBM Log Entry Schema",
+  "description": "Schema for SBM-Harness log entries with fault injection and recovery tracking",
+  "type": "object",
+  "required": [
+    "event_type",
+    "timestamp",
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version for backward compatibility",
+      "const": "1.0"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of event being logged",
+      "enum": [
+        "FAULT_INJECTION",
+        "GUARD_TRIGGER",
+        "RECOVERY_ACTION",
+        "TEST_START",
+        "TEST_END"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "ISO 8601 timestamp with timezone",
+      "format": "date-time"
+    },
+    "seed": {
+      "type": "integer",
+      "description": "Random seed used for this test/fault injection (for reproducibility)",
+      "minimum": 0
+    },
+    "gsn_ref": {
+      "type": "array",
+      "description": "GSN (Goal Structuring Notation) references for traceability",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 0
+    },
+    "fault_id": {
+      "type": "string",
+      "description": "Unique identifier for the fault injection"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the event"
+    },
+    "location": {
+      "type": "object",
+      "description": "Location where fault was injected or event occurred",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "function": {
+          "type": "string"
+        }
+      }
+    },
+    "injected_fault": {
+      "type": "object",
+      "description": "Details of the injected fault",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "out_of_bounds_access",
+            "null_pointer",
+            "buffer_overflow",
+            "timing_violation",
+            "bit_flip",
+            "integer_overflow",
+            "infinite_loop",
+            "error_status",
+            "other"
+          ]
+        }
+      },
+      "required": ["type"]
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Outcome of the fault injection or event",
+      "enum": [
+        "DETECTED_AND_RECOVERED",
+        "DETECTED_NOT_RECOVERED",
+        "NOT_DETECTED",
+        "N/A"
+      ]
+    },
+    "detection_mechanism": {
+      "type": "string",
+      "description": "Mechanism that detected the fault"
+    },
+    "recovery_action": {
+      "type": "string",
+      "description": "Action taken to recover from the fault"
+    },
+    "severity": {
+      "type": "string",
+      "description": "Severity level of the fault",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "guard_type": {
+      "type": "string",
+      "description": "Type of guard that was triggered (for GUARD_TRIGGER events)"
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional event-specific details"
+    },
+    "physical_params": {
+      "type": "object",
+      "description": "Physical parameters used in fault injection calculations",
+      "properties": {
+        "temp_kelvin": {
+          "type": "number",
+          "minimum": 0
+        },
+        "v_core_mv": {
+          "type": "number",
+          "minimum": 0
+        },
+        "bit_flip_prob": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "timing_jitter_s": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

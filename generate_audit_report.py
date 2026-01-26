@@ -5,6 +5,89 @@ from pathlib import Path
 import re
 from typing import Dict, List, Any
 
+
+# ────────────────────────────────────────────────
+# NORMALIZATION HELPERS FOR SNAPSHOT TESTING
+# ────────────────────────────────────────────────
+def normalize_timestamp(timestamp_str: str) -> str:
+    """
+    Normalize timestamp to a fixed value for snapshot testing.
+    
+    Args:
+        timestamp_str: ISO 8601 timestamp string
+        
+    Returns:
+        Normalized timestamp string
+    """
+    return "2026-01-01T00:00:00.000Z"
+
+
+def normalize_float(value: float, precision: int = 8) -> float:
+    """
+    Normalize float to fixed precision to avoid minor differences.
+    
+    Args:
+        value: Float value to normalize
+        precision: Number of significant figures
+        
+    Returns:
+        Normalized float value
+    """
+    if value == 0:
+        return 0.0
+    return round(value, precision)
+
+
+def _round_float_match(match: re.Match) -> str:
+    """
+    Helper function to round float matches in regex substitution.
+    
+    Args:
+        match: Regex match object containing a float
+        
+    Returns:
+        Rounded float as string (6 decimal places)
+    """
+    try:
+        num = float(match.group(0))
+        return f"{num:.6f}"
+    except ValueError:
+        return match.group(0)
+
+
+def normalize_report_for_snapshot(content: str) -> str:
+    """
+    Normalize report content for snapshot testing by removing/standardizing dynamic parts.
+    
+    Args:
+        content: Report content string
+        
+    Returns:
+        Normalized content
+    """
+    # Replace timestamps
+    content = re.sub(
+        r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?',
+        '2026-01-01T00:00:00.000Z',
+        content
+    )
+    
+    # Normalize file paths (remove absolute paths)
+    content = re.sub(
+        r'/[a-zA-Z0-9/_.-]+/SBM-Harness/',
+        'SBM-Harness/',
+        content
+    )
+    
+    # Round floating point numbers to 6 decimal places
+    content = re.sub(
+        r'\d+\.\d{7,}',
+        _round_float_match,
+        content
+    )
+    
+    return content
+
 # ────────────────────────────────────────────────
 # CONFIG & FILE PATHS (customize these)
 # ────────────────────────────────────────────────

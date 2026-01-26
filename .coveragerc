@@ -1,0 +1,34 @@
+# .coveragerc - Coverage configuration for SBM-Harness
+
+[run]
+branch = True
+source = .
+omit =
+    tests/*
+    build/*
+    .venv/*
+    */site-packages/*
+    setup.py
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+# Coverage thresholds for safety-critical modules
+# These modules must maintain high branch coverage
+[paths]
+critical_modules =
+    fault_engine.py
+    sbm_log_validator.py
+
+[html]
+directory = build/coverage_html

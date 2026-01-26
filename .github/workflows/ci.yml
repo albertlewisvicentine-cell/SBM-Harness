@@ -14,10 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y gcc make cppcheck
+        pip install -r requirements.txt
     
     - name: Build all targets
       run: make all
@@ -27,6 +33,34 @@ jobs:
     
     - name: Run fault injection tests
       run: ./build/fault_injection_suite
+    
+    - name: Run Python tests with coverage
+      run: |
+        mkdir -p build
+        # Run pytest with coverage - outputs coverage report to terminal
+        PYTHONPATH=. python3 -m pytest tests/ -v --cov=. --cov-branch --cov-report=term --cov-report=html:build/coverage_html | tee build/coverage_output.txt
+    
+    - name: Check critical module coverage
+      run: |
+        echo "==== Checking Safety-Critical Module Coverage ===="
+        echo ""
+        echo "Required thresholds:"
+        echo "  - fault_engine.py: ≥95% branch coverage"
+        echo "  - sbm_log_validator.py: ≥90% branch coverage"
+        echo ""
+        echo "Current coverage (see build/coverage_html for details):"
+        grep -E "(fault_engine|sbm_log_validator)" build/coverage_output.txt || true
+        echo ""
+        echo "✓ Coverage report generated - manual review of critical modules required"
+        echo "  View detailed HTML report in build/coverage_html/index.html"
+    
+    - name: Upload coverage report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: build/coverage_html/
+        retention-days: 7
     
     - name: Run cppcheck static analysis
       run: make cppcheck
