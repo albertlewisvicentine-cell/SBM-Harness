@@ -14,8 +14,8 @@ const ajv = new Ajv({
 ajv.addFormat('date-time', {
   type: 'string',
   validate: (value) => {
-    // ISO 8601 date-time format validation (supports both Z and timezone offsets)
-    const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}(?::\d{2}|\d{2}))$/;
+    // ISO 8601 date-time format validation (supports Z, +HH:MM, and +HHMM formats)
+    const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2}|[+-]\d{2}\d{2})$/;
     return iso8601Regex.test(value) && !isNaN(Date.parse(value));
   }
 });
