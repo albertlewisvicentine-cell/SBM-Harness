@@ -39,7 +39,39 @@ make clean
 
 - GCC with C11 support
 - Make
+- Python 3.7+ with PyYAML (for audit report generation)
 - Optional: cppcheck and clang-tidy for static analysis
+
+## Audit Report Generation
+
+The SBM-Harness includes an automated audit report generator that creates safety case documentation from fault injection test results.
+
+### Usage
+
+```bash
+# Generate an audit report from fault injection logs
+python3 generate_audit_report.py
+```
+
+This reads:
+- `PHYSICAL_CONSTANTS.md` - Physical constants table
+- `sbm_config.yaml` - Environment configuration and safety goals
+- `RECOVERY_LOGS.json` - Fault injection and recovery logs
+
+And generates:
+- `AUDIT_REPORT_AUTO.md` - Auto-generated audit report with traceability
+
+### Configuration Files
+
+- **PHYSICAL_CONSTANTS.md**: Defines physical constants used in safety validation
+- **sbm_config.yaml**: Configures the operating environment and defines safety goals (GSN references)
+- **RECOVERY_LOGS.json**: Contains fault injection test results and recovery evidence
+
+The audit report provides:
+1. Physical operating envelope validation
+2. Safety goal traceability with evidence
+3. Statistical success rates for fault detection/recovery
+4. Sections for manual review and approval
 
 ## Project Structure
 
@@ -56,6 +88,11 @@ SBM-Harness/
 │   └── fault_injection.c # Fault injection tests
 ├── docs/             # Documentation
 │   └── SAFETY_MANUAL.md # SBM to MISRA C:2012 mapping
+├── evidence/         # Fault injection evidence artifacts
+├── generate_audit_report.py  # Audit report generator
+├── PHYSICAL_CONSTANTS.md      # Physical constants for validation
+├── sbm_config.yaml           # Configuration and safety goals
+├── RECOVERY_LOGS.json        # Fault injection test logs
 └── Makefile          # Build system
 ```
 
