@@ -103,10 +103,10 @@ def generate_audit_report():
 
     # Example: pull relevant constants used in config (expand as needed)
     # Map config keys to physical constant symbols
+    # Only include mappings for symbols that exist in PHYSICAL_CONSTANTS.md
     key_to_symbol = {
-        "gravity": "g",
-        "temperature": "T",
-        "pressure": "P"
+        "gravity": "g"
+        # Future: Add "temperature": "T", "pressure": "P" when those constants are defined
     }
     
     for key, val in env.items():
@@ -115,14 +115,6 @@ def generate_audit_report():
         if sym and sym in phys_consts:
             c = phys_consts[sym]
             md_lines.append(f"| {sym} | {c['name']} | {val} | {c['value']} | {c['units']} | From config/env |")
-        else:
-            # Heuristic match for other cases
-            symbol_match = re.search(r'^([a-zA-Z_]+)', str(key))
-            if symbol_match:
-                sym = symbol_match.group(1)
-                if sym in phys_consts:
-                    c = phys_consts[sym]
-                    md_lines.append(f"| {sym} | {c['name']} | {val} | {c['value']} | {c['units']} | From config/env |")
 
     md_lines.extend([
         "\n## 2. Safety Goals & Evidence Traceability",
@@ -140,7 +132,7 @@ def generate_audit_report():
         md_lines.append(f"| {gid} | {desc} | {total} | {recovered} | {rate} | See linked logs |")
 
     md_lines.extend([
-        f"\n**Overall:** {detected_recovered}/{total_injections} faults injected → {detected_recovered / total_injections * 100:.2f}% recovery rate (if applicable)",
+        f"\n**Overall:** {detected_recovered}/{total_injections} faults injected → {detected_recovered / total_injections * 100:.2f}% recovery rate" if total_injections > 0 else "\n**Overall:** No fault injections recorded",
         "\n## 3. Deviations & Justifications",
         "[Manual review section – insert any observed deviations here]",
         "\n## 4. Approval",
