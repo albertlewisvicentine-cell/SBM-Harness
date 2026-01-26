@@ -10,11 +10,13 @@ const ajv = new Ajv({
   strictTypes: true
 });
 
-// Optional: better timestamp validation (AJV's date-time is lenient)
+// Optional: better timestamp validation with proper ISO 8601 regex
 ajv.addFormat('date-time', {
   type: 'string',
   validate: (value) => {
-    return !isNaN(Date.parse(value)) && (value.includes('T') && (value.includes('Z') || value.includes('+') || value.includes('-')));
+    // ISO 8601 date-time format validation
+    const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+    return iso8601Regex.test(value) && !isNaN(Date.parse(value));
   }
 });
 
@@ -90,7 +92,24 @@ if (require.main === module) {
       }
     } catch (e) {
       // If regular JSON parsing fails, try NDJSON (one JSON per line)
-      entries = content.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
+      const lines = content.split('\n').filter(line => line.trim());
+      entries = [];
+      let parseErrors = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        try {
+          entries.push(JSON.parse(lines[i]));
+        } catch (parseErr) {
+          parseErrors.push(`Line ${i + 1}: ${parseErr.message}`);
+        }
+      }
+      
+      if (parseErrors.length > 0) {
+        console.error('Failed to parse NDJSON file:');
+        parseErrors.forEach(err => console.error(`  - ${err}`));
+        process.exit(1);
+      }
+      
       console.log(`Validating ${entries.length} log entries from NDJSON file...`);
     }
 
