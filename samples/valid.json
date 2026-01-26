@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "event_type": "FAULT_INJECTION",
+  "timestamp": "2026-01-25T19:07:00Z",
+  "seed": 123456,
+  "fault_id": "fault-abc-001",
+  "description": "Injected bit flip in memory register",
+  "injected_fault": {
+    "type": "bit_flip"
+  },
+  "outcome": "DETECTED_AND_RECOVERED",
+  "severity": "high",
+  "physical_params": {
+    "bit_flip_prob": 0.001
+  }
+}
