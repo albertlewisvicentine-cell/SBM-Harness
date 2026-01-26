@@ -18,6 +18,21 @@ class PhysicsDerivedInjector:
     based on fundamental physics constants and environmental parameters.
     """
     
+    # Fundamental physics constants
+    BOLTZMANN_CONSTANT = 1.380649e-23  # J/K
+    ELEMENTARY_CHARGE = 1.602176e-19   # C
+    SPEED_OF_LIGHT = 2.99792458e8      # m/s (exact value)
+    
+    # Material and circuit constants
+    FR4_DIELECTRIC_SQRT = 2.12  # sqrt(4.5) for FR4 PCB material effective permittivity
+    
+    # Tunable parameters for bit flip probability scaling
+    BASE_SCALE_FACTOR = 1e-6  # Empirical scaling factor for realistic bit flip probabilities
+    
+    # Timing jitter calculation parameters
+    SAFETY_MARGIN_RATIO = 0.2  # 20% of clock period reserved for setup/hold times
+    TIMING_VIOLATION_INDICATOR = 1e-15  # 1 femtosecond - indicates timing closure violation
+    
     def __init__(self, env):
         """
         Initialize the physics-derived injector.
@@ -29,10 +44,7 @@ class PhysicsDerivedInjector:
                 - pcb_trace_length_m: PCB trace length in meters (optional)
                 - clock_period_s: Clock period in seconds (optional)
         """
-        self.k = 1.380649e-23  # Boltzmann constant (J/K)
-        self.e = 1.602176e-19  # Elementary charge (C)
         self.env = env
-        self.c = 2.998e8  # Speed of light in m/s (for c-bound calculations)
     
     def calculate_bit_flip_prob(self):
         """
@@ -48,14 +60,14 @@ class PhysicsDerivedInjector:
             float: Bit flip probability (0.0 to 1.0)
         """
         # Thermal energy (J)
-        thermal_variance = self.k * self.env.temp_kelvin
+        thermal_variance = self.BOLTZMANN_CONSTANT * self.env.temp_kelvin
         
         # Convert core voltage from mV to V
         v_core_v = self.env.v_core_mv / 1000.0
         
         # Energy barrier for a bit flip (approximation based on core voltage)
         # This represents the energy needed to flip a bit in CMOS logic
-        energy_barrier = self.e * v_core_v
+        energy_barrier = self.ELEMENTARY_CHARGE * v_core_v
         
         # Calculate bit flip probability using Arrhenius-like relationship
         # P = exp(-E_barrier / kT)
@@ -90,9 +102,9 @@ class PhysicsDerivedInjector:
         Returns:
             float: Scaling factor (typically << 1 for realistic probabilities)
         """
-        # Base scaling factor (tunable parameter)
+        # Use empirically-derived base scaling factor
         # Lower values = more conservative (lower bit flip probability)
-        base_scale = 1e-6
+        base_scale = self.BASE_SCALE_FACTOR
         
         # Adjust based on voltage - lower voltage = less margin = higher probability
         # Normalize to typical 1.0V core voltage
@@ -100,7 +112,7 @@ class PhysicsDerivedInjector:
         
         # Adjust based on thermal energy - higher temperature = higher probability
         # Normalize to room temperature (300K -> kT ≈ 4.14e-21 J)
-        thermal_factor = thermal_variance / (self.k * 300.0)
+        thermal_factor = thermal_variance / (self.BOLTZMANN_CONSTANT * 300.0)
         
         return base_scale * voltage_factor * thermal_factor
     
@@ -127,21 +139,21 @@ class PhysicsDerivedInjector:
         # Calculate signal propagation delay based on speed of light
         # Using effective speed in PCB (typically ~2/3 of c in vacuum due to FR4 dielectric)
         # Effective permittivity of FR4 ≈ 4.5, so v_eff = c / sqrt(4.5) ≈ c / 2.12
-        effective_speed = self.c / 2.12
+        effective_speed = self.SPEED_OF_LIGHT / self.FR4_DIELECTRIC_SQRT
         
         # Propagation delay for the PCB trace (round trip for worst case)
         propagation_delay = (2 * self.env.pcb_trace_length_m) / effective_speed
         
         # Maximum jitter must not exceed the clock period minus propagation delay
-        # We also add a safety margin (e.g., 20% of clock period) for setup/hold times
-        safety_margin = 0.2 * self.env.clock_period_s
+        # We also add a safety margin for setup/hold times
+        safety_margin = self.SAFETY_MARGIN_RATIO * self.env.clock_period_s
         
         max_jitter = self.env.clock_period_s - propagation_delay - safety_margin
         
         # Ensure we don't return negative jitter (means timing closure is impossible)
         if max_jitter < 0:
-            # Timing closure violation - return very small value to indicate problem
-            return 1e-15  # 1 femtosecond (effectively zero)
+            # Timing closure violation - return indicator value
+            return self.TIMING_VIOLATION_INDICATOR
         
         return max_jitter
 

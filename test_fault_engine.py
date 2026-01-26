@@ -43,10 +43,10 @@ class TestPhysicsDerivedInjector(unittest.TestCase):
         env = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
         injector = PhysicsDerivedInjector(env)
         
-        # Check constants
-        self.assertEqual(injector.k, 1.380649e-23)
-        self.assertEqual(injector.e, 1.602176e-19)
-        self.assertEqual(injector.c, 2.998e8)
+        # Check constants (now class-level)
+        self.assertEqual(injector.BOLTZMANN_CONSTANT, 1.380649e-23)
+        self.assertEqual(injector.ELEMENTARY_CHARGE, 1.602176e-19)
+        self.assertEqual(injector.SPEED_OF_LIGHT, 2.99792458e8)
         self.assertIs(injector.env, env)
     
     def test_bit_flip_prob_range(self):
@@ -167,7 +167,7 @@ class TestPhysicsDerivedInjector(unittest.TestCase):
         env = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
         injector = PhysicsDerivedInjector(env)
         
-        thermal_variance = injector.k * env.temp_kelvin
+        thermal_variance = injector.BOLTZMANN_CONSTANT * env.temp_kelvin
         v_core_v = env.v_core_mv / 1000.0
         
         scaling_factor = injector._calculate_scaling_factor(thermal_variance, v_core_v)
@@ -182,13 +182,13 @@ class TestPhysicsDerivedInjector(unittest.TestCase):
         injector = PhysicsDerivedInjector(env)
         
         # Boltzmann constant (J/K)
-        self.assertAlmostEqual(injector.k, 1.380649e-23, places=30)
+        self.assertAlmostEqual(injector.BOLTZMANN_CONSTANT, 1.380649e-23, places=30)
         
         # Elementary charge (C)
-        self.assertAlmostEqual(injector.e, 1.602176e-19, places=25)
+        self.assertAlmostEqual(injector.ELEMENTARY_CHARGE, 1.602176e-19, places=25)
         
-        # Speed of light (m/s)
-        self.assertAlmostEqual(injector.c, 2.998e8, places=3)
+        # Speed of light (m/s) - exact value
+        self.assertAlmostEqual(injector.SPEED_OF_LIGHT, 2.99792458e8, places=3)
     
     def test_realistic_scenario(self):
         """Test a realistic embedded system scenario."""
@@ -220,8 +220,8 @@ class TestPhysicsFormulas(unittest.TestCase):
         env = Environment(temp_kelvin=300.0, v_core_mv=1000.0)
         injector = PhysicsDerivedInjector(env)
         
-        expected_thermal_energy = injector.k * 300.0
-        calculated_thermal_energy = injector.k * env.temp_kelvin
+        expected_thermal_energy = injector.BOLTZMANN_CONSTANT * 300.0
+        calculated_thermal_energy = injector.BOLTZMANN_CONSTANT * env.temp_kelvin
         
         self.assertAlmostEqual(calculated_thermal_energy, expected_thermal_energy)
     
@@ -231,10 +231,10 @@ class TestPhysicsFormulas(unittest.TestCase):
         injector = PhysicsDerivedInjector(env)
         
         # Energy barrier should be e * V
-        expected_barrier = injector.e * 1.0  # 1.0V
-        thermal_variance = injector.k * env.temp_kelvin
+        expected_barrier = injector.ELEMENTARY_CHARGE * 1.0  # 1.0V
+        thermal_variance = injector.BOLTZMANN_CONSTANT * env.temp_kelvin
         v_core_v = env.v_core_mv / 1000.0
-        calculated_barrier = injector.e * v_core_v
+        calculated_barrier = injector.ELEMENTARY_CHARGE * v_core_v
         
         self.assertAlmostEqual(calculated_barrier, expected_barrier)
     
@@ -248,14 +248,14 @@ class TestPhysicsFormulas(unittest.TestCase):
         )
         injector = PhysicsDerivedInjector(env)
         
-        # In PCB (FR4), effective speed is c/2.12
-        effective_speed = injector.c / 2.12
+        # In PCB (FR4), effective speed is c/FR4_DIELECTRIC_SQRT
+        effective_speed = injector.SPEED_OF_LIGHT / injector.FR4_DIELECTRIC_SQRT
         
         # Round trip delay for 10cm trace
         expected_delay = (2 * env.pcb_trace_length_m) / effective_speed
         
         # Verify the calculation is consistent
-        calculated_delay = (2 * 0.1) / (injector.c / 2.12)
+        calculated_delay = (2 * 0.1) / (injector.SPEED_OF_LIGHT / injector.FR4_DIELECTRIC_SQRT)
         self.assertAlmostEqual(expected_delay, calculated_delay, places=15)
 
 
