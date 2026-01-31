@@ -28,6 +28,22 @@ typedef enum {
 } sbm_status_t;
 
 /**
+ * @brief Echo Profile levels for graduated safety responses
+ * 
+ * Echo Profiles define how the system responds to runtime safety violations.
+ * The profile level is locked at compile time via SBM_ECHO_PROFILE_LEVEL.
+ * 
+ * These levels provide graduated responses from lightweight logging (warn)
+ * to cryptographic confirmation (confirm) for safety-critical systems.
+ */
+typedef enum {
+    ECHO_PROFILE_WARN = 0,    /**< Log violation, continue execution */
+    ECHO_PROFILE_SLOW,        /**< Log violation, add deliberate delay */
+    ECHO_PROFILE_PAUSE,       /**< Log violation, wait for acknowledgment */
+    ECHO_PROFILE_CONFIRM      /**< Log violation, require crypto confirmation */
+} sbm_echo_profile_t;
+
+/**
  * @brief Loop context for bounded iteration checking
  * 
  * This structure tracks loop iteration counts to ensure bounded behavior
