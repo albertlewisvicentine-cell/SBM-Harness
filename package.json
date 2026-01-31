@@ -1,0 +1,20 @@
+{
+  "name": "sbm-harness-validator",
+  "version": "1.0.0",
+  "description": "Node.js validator for SBM-Harness log entries using JSON Schema",
+  "main": "validate-sbm-log.js",
+  "scripts": {
+    "validate": "node validate-sbm-log.js"
+  },
+  "keywords": [
+    "validation",
+    "schema",
+    "sbm",
+    "logging"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "ajv": "^8.12.0"
+  }
+}

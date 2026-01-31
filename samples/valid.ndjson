@@ -1,0 +1,3 @@
+{"schema_version": "1.0", "event_type": "FAULT_INJECTION", "timestamp": "2026-01-25T19:07:00Z", "seed": 123456, "fault_id": "fault-001", "description": "First fault", "injected_fault": {"type": "bit_flip"}, "outcome": "DETECTED_AND_RECOVERED", "severity": "high"}
+{"schema_version": "1.0", "event_type": "GUARD_TRIGGER", "timestamp": "2026-01-25T19:07:01Z", "guard_type": "GUARD_INDEX", "outcome": "DETECTED_AND_RECOVERED"}
+{"schema_version": "1.0", "event_type": "RECOVERY_ACTION", "timestamp": "2026-01-25T19:07:02Z", "description": "System recovered successfully", "recovery_action": "restart_component"}
