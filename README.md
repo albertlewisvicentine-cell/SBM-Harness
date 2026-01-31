@@ -5,10 +5,13 @@ Fault injection testing environment for Safe Bounded Memory (SBM) rules
 
 The SBM-Harness provides runtime guards and verification mechanisms for memory safety in C programs. It implements checks aligned with MISRA C:2012 guidelines and supports safety-critical embedded systems development.
 
+**New in 2026.1.0**: SBM-014-HUMAN (Causal Echo Contract) - A reflection translation layer that converts system error reflections into structured, human-interpretable signals with recovery guidance.
+
 ## Documentation
 
 For detailed information on SBM rules and their mapping to MISRA C:2012, see:
 - [docs/SAFETY_MANUAL.md](docs/SAFETY_MANUAL.md) - Safety manual with rule mappings and enforcement strategies
+- [sbm_014_causal_echo.py](sbm_014_causal_echo.py) - SBM-014-HUMAN implementation (Causal Echo Contract)
 
 ## Building
 
