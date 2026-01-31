@@ -238,5 +238,5 @@ See `tests/fault_injection.c` for reference test patterns.
 ---
 
 **Review Status**: ✅ Human-readable contract established  
-**Implementation Status**: ⚠️ Partial (snapshot API exists, checksum validation needs extension)  
-**Next Steps**: Extend `sbm_types.h` with `sbm_echo_profile_t` enum, add checksum helpers
+**Implementation Status**: ⚠️ Partial (snapshot API exists, `sbm_echo_profile_t` enum added, checksum validation needs extension)  
+**Next Steps**: Implement Echo Profile runtime handlers, add checksum helper functions
