@@ -259,10 +259,106 @@ sbm_status_t high_level_operation(void) {
 **MISRA**: Rule 12.1, 12.4 (expression evaluation)
 **Enforcement**: Runtime checks, compiler sanitizers
 
-### SBM-011: Side Effects
-**Rule**: Expressions shall not have persistent side effects.
+### SBM-011: Side Effects and Meaning Variance
+
+**Rule**: Expressions shall not have persistent side effects. Functions and expressions must maintain meaning invariance under repeated evaluation.
+
 **MISRA**: Rule 13.5 (side effects)
-**Enforcement**: Static analysis, code review
+
+**Rationale**: Persistent side effects in expressions can lead to non-deterministic behavior, especially when expressions are evaluated multiple times or reordered by compiler optimizations. "Meaning variance" occurs when the same expression produces different observable outcomes on repeated evaluation, violating the principle of referential transparency required in safety-critical code.
+
+**Operational Definition of Meaning Variance**:
+An expression exhibits *meaning variance* if:
+1. **State mutation**: It modifies global or static variables
+2. **I/O operations**: It performs input/output that changes external state
+3. **Non-idempotent behavior**: Repeated evaluation yields different results (e.g., `x++` in an expression)
+4. **Observable side effects**: It causes detectable changes beyond computing its return value
+
+**Enforcement**: 
+- Static analysis tools (clang-tidy with MISRA checks)
+- Code review checklist for expression purity
+- Compiler warnings (`-Wsequence-point`, `-Wunsequenced`)
+- Formal verification annotations where applicable
+
+**Acceptable Patterns**:
+```c
+// GOOD: Pure expression, no side effects
+int result = calculate_value(x, y);
+
+// GOOD: Isolated mutation with clear sequencing
+counter++;
+process_item(counter);
+
+// BAD: Side effect in expression
+if (x++ > threshold) { ... }  // Meaning variance!
+
+// BAD: Multiple side effects in same expression
+array[i++] = array[j++];  // Undefined behavior
+```
+
+---
+
+## Echo Profiles: Graduated Response Levels
+
+Echo Profiles define graduated response levels for runtime safety violations. Instead of immediately terminating on a safety violation, the system can respond with different severity levels based on the operational context and criticality of the violation.
+
+### Echo Profile Levels
+
+The following table defines the four locked Echo Profile levels:
+
+| Profile Level | Response Behavior | Use Case | Performance Impact |
+|--------------|-------------------|----------|-------------------|
+| **warn** | Log violation, continue execution | Development, debug builds | Minimal (~1-5 μs) |
+| **slow** | Log violation, add deliberate delay (10-100ms) | Testing, staging environments | Moderate (10-100 ms) |
+| **pause** | Log violation, wait for manual acknowledgment | Interactive debugging, safety analysis | Blocking (user-dependent) |
+| **confirm** | Log violation, require cryptographic confirmation to continue | Production safety-critical, audit mode | Significant (100ms-1s) |
+
+### Operational Semantics
+
+**warn**: 
+- Increments violation counter
+- Writes diagnostic message to safety log
+- Continues normal execution
+- Suitable for non-critical violations or development
+
+**slow**:
+- Performs all **warn** actions
+- Injects configurable delay (default: 50ms)
+- Creates time-separation for race condition detection
+- Useful for stress testing and timing analysis
+
+**pause**:
+- Performs all **slow** actions  
+- Blocks execution until operator acknowledgment
+- Displays violation context (file, line, expression)
+- Enables interactive debugging of safety violations
+
+**confirm**:
+- Performs all **pause** actions
+- Requires cryptographic signature or hardware token confirmation
+- Stores cryptographic audit trail
+- Highest security level for production safety-critical systems
+
+### Profile Selection
+
+Echo Profiles are **locked at compile time** to prevent runtime tampering:
+
+```c
+// In sbm_config.h or build flags
+#define SBM_ECHO_PROFILE_LEVEL ECHO_PROFILE_WARN  // Development
+// #define SBM_ECHO_PROFILE_LEVEL ECHO_PROFILE_CONFIRM  // Production
+```
+
+The selected profile cannot be changed at runtime, ensuring consistent behavior and preventing attackers from downgrading safety responses.
+
+### Integration with SBM Rules
+
+Echo Profiles apply to all SBM runtime violations:
+- SBM-000: Null pointer checks
+- SBM-002: Array bounds violations  
+- SBM-005: Loop bound violations
+- SBM-009: Integer overflow detection
+- SBM-014: Observable state consistency (see `sbm-014-human.md`)
 
 ---
 
