@@ -360,6 +360,28 @@ Echo Profiles apply to all SBM runtime violations:
 - SBM-009: Integer overflow detection
 - SBM-014: Observable state consistency (see `sbm-014-human.md`)
 
+### SBM-014-HUMAN: Causal Echo Contract
+**Rule**: Reflected actions must return structured signal for humans to infer violated invariant class and recover, without exposing internal mechanics.
+**Class**: Reflection Translation Layer
+**Status**: Canonical (Version 2026.1.0)
+**Placement**: Outside the core mirror
+
+**Purpose**: SBM-014-HUMAN ensures that causal reflection enforced by the core system is perceived by humans as *informative back-pressure*, not arbitrary failure. It preserves system equilibrium without turning humans into entropy amplifiers.
+
+**Invariant**: A reflected action must return enough structured signal for a human to infer the violated invariant class and recover laminar behavior, without exposing internal system mechanics.
+
+**Implementation**: The `sbm_014_causal_echo.py` module provides the `CausalEcho` class which translates raw SBM error codes into structured, human-interpretable signals including:
+- **Invariant classification**: Maps errors to high-level categories (spatial, temporal, existential, consistency)
+- **Severity assessment**: Assigns appropriate severity levels (critical, high, medium, low)
+- **Recovery strategies**: Provides actionable guidance for resolution
+- **Context sanitization**: Removes internal mechanics while preserving actionable information
+
+**Enforcement**: 
+- Python module operates as a translation layer outside core C guards
+- Translates SBM_ERR_* codes to structured causal echoes
+- Provides human-readable recovery guidance
+- Sanitizes context to prevent exposure of internal variable names, memory addresses, and implementation details
+
 ---
 
 ## Statistical Safety Gate Methodology

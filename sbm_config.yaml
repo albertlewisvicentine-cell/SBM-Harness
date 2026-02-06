@@ -39,3 +39,8 @@ safety_goals:
     description: "Spatial memory violations shall be prevented"
     gsn_ref: "SBM-001"
     acceptance_criteria: "100% spatial violation detection"
+    
+  - id: "G7"
+    description: "All reflected actions shall provide structured human-interpretable signals"
+    gsn_ref: "SBM-014-HUMAN"
+    acceptance_criteria: "All error reflections include invariant class and recovery guidance"

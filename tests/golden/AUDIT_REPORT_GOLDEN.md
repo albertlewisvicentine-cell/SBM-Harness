@@ -16,6 +16,7 @@
 | G4 | All error statuses shall be checked and propagated | 1 | 1 | 100.0% | See linked logs |
 | G5 | Numerical overflow violations shall be prevented | 1 | 1 | 100.0% | See linked logs |
 | G6 | Spatial memory violations shall be prevented | 1 | 1 | 100.0% | See linked logs |
+| G7 | All reflected actions shall provide structured human-interpretable signals | 0 | 0 | N/A | See linked logs |
 
 **Overall:** 5/5 faults injected → 100.00% recovery rate
 
