@@ -116,7 +116,7 @@
       "validate-sbm-log.js": 4266,
       "sbm_config.yaml": 1435,
       ".gitignore": 710,
-      "DIGITAL_ASSETS_REPORT.json": 5819,
+      "DIGITAL_ASSETS_REPORT.json": 6013,
       "README.md": 9888,
       "SUMMARY.md": 6749,
       "check_coverage.py": 5121,
@@ -163,7 +163,7 @@
       "src/sbm_snapshot.c": 8854,
       "src/core_guards.c": 2198
     },
-    "total_size": 281434
+    "total_size": 281628
   },
   "conflicts": {
     "naming": {},
