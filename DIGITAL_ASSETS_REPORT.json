@@ -1,6 +1,6 @@
 {
   "inventory": {
-    "total_files": 62,
+    "total_files": 64,
     "by_category": {
       "source_code": [
         "safety_gate.py",
@@ -20,6 +20,7 @@
         "tests/test_report_normalization.py",
         "tests/test_audit_snapshots.py",
         "tests/fault_injection.c",
+        "tests/test_digital_assets.py",
         "tests/test_log_validation.py",
         "tests/unit_tests.c",
         "include/sbm_snapshot.h",
@@ -56,6 +57,7 @@
       ],
       "documentation": [
         "VALIDATION_GATE.md",
+        "AUDIT_REPORT_AUTO.md",
         "DIGITAL_ASSETS_INVENTORY.md",
         "README-validator.md",
         "README.md",
@@ -82,11 +84,11 @@
       ]
     },
     "by_extension": {
-      ".py": 15,
+      ".py": 16,
       "no_extension": 4,
       ".txt": 1,
       ".json": 12,
-      ".md": 11,
+      ".md": 12,
       ".c": 6,
       ".js": 1,
       ".yaml": 1,
@@ -109,6 +111,7 @@
       "simulation.py": 3452,
       "RECOVERY_LOGS.json": 5019,
       "VALIDATION_GATE.md": 5265,
+      "AUDIT_REPORT_AUTO.md": 1608,
       "sim.c": 3554,
       "run_batch.py": 4004,
       "DIGITAL_ASSETS_INVENTORY.md": 9637,
@@ -116,8 +119,8 @@
       "validate-sbm-log.js": 4266,
       "sbm_config.yaml": 1435,
       ".gitignore": 710,
-      "DIGITAL_ASSETS_REPORT.json": 6013,
-      "README.md": 9888,
+      "DIGITAL_ASSETS_REPORT.json": 6166,
+      "README.md": 10276,
       "SUMMARY.md": 6749,
       "check_coverage.py": 5121,
       "pyproject.toml": 1189,
@@ -153,6 +156,7 @@
       "tests/test_report_normalization.py": 5902,
       "tests/test_audit_snapshots.py": 6116,
       "tests/fault_injection.c": 3181,
+      "tests/test_digital_assets.py": 7731,
       "tests/test_log_validation.py": 11666,
       "tests/unit_tests.c": 5572,
       "tests/golden/AUDIT_REPORT_GOLDEN.md": 1605,
@@ -163,7 +167,7 @@
       "src/sbm_snapshot.c": 8854,
       "src/core_guards.c": 2198
     },
-    "total_size": 281628
+    "total_size": 291508
   },
   "conflicts": {
     "naming": {},

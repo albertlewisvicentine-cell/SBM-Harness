@@ -93,7 +93,7 @@ python3 check_digital_assets.py
 ```
 
 This will:
-- Inventory all 60+ files in the repository
+- Inventory all 64 files in the repository
 - Check for naming conflicts, content duplication, and license conflicts
 - Generate detailed reports (`DIGITAL_ASSETS_REPORT.json` and `DIGITAL_ASSETS_INVENTORY.md`)
 - Return exit code 0 if no conflicts found

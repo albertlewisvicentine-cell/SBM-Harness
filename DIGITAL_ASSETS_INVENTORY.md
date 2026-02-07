@@ -14,8 +14,8 @@ This report provides a comprehensive inventory of all digital assets in the SBM-
 
 ✅ **No Critical Conflicts Detected**
 
-- **Total Files**: 60
-- **Total Size**: 264,902 bytes (258.7 KB)
+- **Total Files**: 64
+- **Total Size**: 291,508 bytes (284.7 KB)
 - **Naming Conflicts**: 0
 - **Content Conflicts**: 0
 - **Configuration Conflicts**: 0
@@ -31,9 +31,9 @@ This report provides a comprehensive inventory of all digital assets in the SBM-
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| **Source Code** | 25 | Python, C, JavaScript, Header files |
-| **Configuration** | 13 | YAML, JSON configuration files |
-| **Documentation** | 10 | Markdown documentation |
+| **Source Code** | 26 | Python, C, JavaScript, Header files |
+| **Documentation** | 12 | Markdown documentation |
+| **Configuration** | 14 | YAML, JSON configuration files |
 | **Data** | 4 | CSV, NDJSON, Binary, Log files |
 | **Package** | 3 | Dependency management files |
 | **License** | 2 | MIT and Apache 2.0 licenses |
@@ -56,9 +56,9 @@ This report provides a comprehensive inventory of all digital assets in the SBM-
 
 ## Detailed Asset Breakdown
 
-### 1. Source Code (25 files)
+### 1. Source Code (26 files)
 
-**Python Scripts (15)**:
+**Python Scripts (16)**:
 - `check_digital_assets.py` - Asset inventory tool (NEW)
 - `check_coverage.py` - Code coverage checker
 - `fault_engine.py` - Fault injection engine
@@ -71,6 +71,7 @@ This report provides a comprehensive inventory of all digital assets in the SBM-
 - `simulation.py` - Simulation runner
 - `test_fault_engine.py` - Fault engine tests
 - `tests/test_audit_snapshots.py`
+- `tests/test_digital_assets.py` - Digital assets tests (NEW)
 - `tests/test_log_validation.py`
 - `tests/test_report_normalization.py`
 - `tests/test_seeding.py`
@@ -111,23 +112,27 @@ This report provides a comprehensive inventory of all digital assets in the SBM-
 - SBM-009_numerical: drift_envelope_violation.json
 - SBM-010_observability: atomic_snapshot.json, snapshot_metadata.json
 
-### 3. Documentation (10)
+### 3. Documentation (12)
 
 **Main Documentation**:
-- `README.md` - Primary project documentation (9,888 bytes)
+- `README.md` - Primary project documentation
 - `README-validator.md` - Validator documentation
-- `IMPROVEMENTS.md` - Improvement tracking (11,824 bytes)
+- `DIGITAL_ASSETS_INVENTORY.md` - Digital assets inventory (NEW)
+- `IMPROVEMENTS.md` - Improvement tracking
 - `PHYSICAL_CONSTANTS.md` - Physical constants reference
 - `SUMMARY.md` - Project summary
 - `VALIDATION_GATE.md` - Validation gate documentation
 
 **Detailed Documentation** (docs/):
-- `docs/SAFETY_MANUAL.md` - Safety manual (17,526 bytes - largest doc)
+- `docs/SAFETY_MANUAL.md` - Safety manual (largest doc)
 - `docs/SBM-014-HUMAN-CAUSAL-ECHO.md`
 - `docs/sbm-014-human.md`
 
 **Test Documentation**:
 - `tests/golden/AUDIT_REPORT_GOLDEN.md` - Golden audit report
+
+**Generated Documentation**:
+- `AUDIT_REPORT_AUTO.md` - Auto-generated audit report
 
 ### 4. Data Files (4)
 
@@ -212,12 +217,12 @@ SBM-Harness/
 ├── include/                # C header files (3 files)
 ├── samples/                # Sample data (3 files)
 ├── src/                    # C source code (3 files)
-├── tests/                  # Test files (6 files)
+├── tests/                  # Test files (7 files)
 │   └── golden/            # Golden reference (1 file)
-├── *.py                    # Python scripts (15 files)
+├── *.py                    # Python scripts (16 files)
 ├── *.c                     # C source (1 file)
 ├── *.js                    # JavaScript (1 file)
-├── *.md                    # Documentation (6 files)
+├── *.md                    # Documentation (8 files at root)
 ├── LICENSE*                # License files (2 files)
 ├── Makefile                # Build configuration
 ├── requirements.txt        # Python deps
@@ -231,13 +236,13 @@ SBM-Harness/
 ## Size Distribution
 
 **Largest Files**:
-1. `docs/SAFETY_MANUAL.md` - 17,526 bytes
-2. `check_digital_assets.py` - 12,793 bytes
-3. `IMPROVEMENTS.md` - 11,824 bytes
-4. `fault_engine.py` - 11,549 bytes
-5. `tests/test_log_validation.py` - 11,666 bytes
+1. `docs/SAFETY_MANUAL.md` - ~17.5 KB
+2. `check_digital_assets.py` - ~13.9 KB
+3. `IMPROVEMENTS.md` - ~11.8 KB
+4. `fault_engine.py` - ~11.5 KB
+5. `tests/test_log_validation.py` - ~11.7 KB
 
-**Total Repository Size**: 264,902 bytes (258.7 KB)
+**Total Repository Size**: 291,508 bytes (284.7 KB)
 
 ---
 
@@ -291,7 +296,7 @@ Add to CI/CD pipeline:
 ## Conclusion
 
 The SBM-Harness repository maintains a clean and well-organized digital asset structure with:
-- **60 files** across 8 categories
+- **64 files** across 8 categories
 - **No naming conflicts**
 - **No content duplication**
 - **No configuration conflicts**
