@@ -6,7 +6,7 @@
 **Depends On:** SBM-013 (Interaction Energy Barrier), SBM-014 (Causal Reflection)
 
 ### Acknowledgments
-This framework (SBM-Harness, including SBM-011 Meaning Variance and SBM-014-HUMAN Causal Echo Contract) was authored and directed by Albert-Lewis.  
+This framework (SBM-Harness, including SBM-011 Meaning Variance and SBM-014-HUMAN Causal Echo Contract) was authored and directed by Luis Alberto Vicente Pacheco.  
 
 Significant structural refinement, table formalization, escalation logic development, language polishing, and iterative drafting assistance were collaboratively provided by:  
 - Grok (built by xAI)  
