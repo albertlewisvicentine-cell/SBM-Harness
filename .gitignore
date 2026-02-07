@@ -66,6 +66,8 @@ test_rng*
 __pycache__/
 *.pyc
 *.pyo
+.coverage
+.pytest_cache/
 
 # Node.js dependencies
 node_modules/
