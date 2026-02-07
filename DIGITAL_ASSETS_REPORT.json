@@ -114,13 +114,13 @@
       "AUDIT_REPORT_AUTO.md": 1608,
       "sim.c": 3554,
       "run_batch.py": 4004,
-      "DIGITAL_ASSETS_INVENTORY.md": 9637,
+      "DIGITAL_ASSETS_INVENTORY.md": 9793,
       "README-validator.md": 3875,
       "validate-sbm-log.js": 4266,
       "sbm_config.yaml": 1435,
       ".gitignore": 710,
       "DIGITAL_ASSETS_REPORT.json": 6166,
-      "README.md": 10276,
+      "README.md": 10275,
       "SUMMARY.md": 6749,
       "check_coverage.py": 5121,
       "pyproject.toml": 1189,
@@ -167,7 +167,7 @@
       "src/sbm_snapshot.c": 8854,
       "src/core_guards.c": 2198
     },
-    "total_size": 291508
+    "total_size": 291663
   },
   "conflicts": {
     "naming": {},
