@@ -1,0 +1,209 @@
+{
+  "inventory": {
+    "total_files": 64,
+    "by_category": {
+      "source_code": [
+        "safety_gate.py",
+        "repro_compare.py",
+        "test_fault_engine.py",
+        "sbm_log_validator.py",
+        "simulation.py",
+        "sim.c",
+        "run_batch.py",
+        "validate-sbm-log.js",
+        "check_coverage.py",
+        "generate_audit_report.py",
+        "gate_runner.py",
+        "check_digital_assets.py",
+        "fault_engine.py",
+        "tests/test_seeding.py",
+        "tests/test_report_normalization.py",
+        "tests/test_audit_snapshots.py",
+        "tests/fault_injection.c",
+        "tests/test_digital_assets.py",
+        "tests/test_log_validation.py",
+        "tests/unit_tests.c",
+        "include/sbm_snapshot.h",
+        "include/sbm_types.h",
+        "include/sbm_harness.h",
+        "src/state_manager.c",
+        "src/sbm_snapshot.c",
+        "src/core_guards.c"
+      ],
+      "license": [
+        "LICENSE",
+        "LICENSE.APACHE2"
+      ],
+      "package": [
+        "requirements.txt",
+        "pyproject.toml",
+        "package.json"
+      ],
+      "configuration": [
+        "RECOVERY_LOGS.json",
+        "sbm_config.yaml",
+        "DIGITAL_ASSETS_REPORT.json",
+        "sbm_log_schema.json",
+        ".github/workflows/ci.yml",
+        ".github/workflows/validation-gate.yml",
+        "samples/valid.json",
+        "samples/invalid.json",
+        "evidence/SBM-001_spatial/overflow_violation.json",
+        "evidence/SBM-010_observability/atomic_snapshot.json",
+        "evidence/SBM-010_observability/snapshot_metadata.json",
+        "evidence/SBM-004_existential/null_deref_snapshot.json",
+        "evidence/SBM-009_numerical/drift_envelope_violation.json",
+        "evidence/SBM-007_sampling/trajectory_gap_snapshot.json"
+      ],
+      "documentation": [
+        "VALIDATION_GATE.md",
+        "AUDIT_REPORT_AUTO.md",
+        "DIGITAL_ASSETS_INVENTORY.md",
+        "README-validator.md",
+        "README.md",
+        "SUMMARY.md",
+        "IMPROVEMENTS.md",
+        "PHYSICAL_CONSTANTS.md",
+        "docs/sbm-014-human.md",
+        "docs/SBM-014-HUMAN-CAUSAL-ECHO.md",
+        "docs/SAFETY_MANUAL.md",
+        "tests/golden/AUDIT_REPORT_GOLDEN.md"
+      ],
+      "other": [
+        ".gitignore"
+      ],
+      "build": [
+        ".coveragerc",
+        "Makefile"
+      ],
+      "data": [
+        "samples/valid.ndjson",
+        "evidence/SBM-001_spatial/memory_map_before_after.bin",
+        "evidence/SBM-009_numerical/stability_plot.csv",
+        "evidence/SBM-007_sampling/monitor_timing.log"
+      ]
+    },
+    "by_extension": {
+      ".py": 16,
+      "no_extension": 4,
+      ".txt": 1,
+      ".json": 12,
+      ".md": 12,
+      ".c": 6,
+      ".js": 1,
+      ".yaml": 1,
+      ".toml": 1,
+      ".apache2": 1,
+      ".yml": 2,
+      ".ndjson": 1,
+      ".bin": 1,
+      ".csv": 1,
+      ".log": 1,
+      ".h": 3
+    },
+    "file_sizes": {
+      "safety_gate.py": 4052,
+      "repro_compare.py": 3404,
+      "test_fault_engine.py": 10696,
+      "LICENSE": 1082,
+      "requirements.txt": 406,
+      "sbm_log_validator.py": 5501,
+      "simulation.py": 3452,
+      "RECOVERY_LOGS.json": 5019,
+      "VALIDATION_GATE.md": 5265,
+      "AUDIT_REPORT_AUTO.md": 1608,
+      "sim.c": 3554,
+      "run_batch.py": 4004,
+      "DIGITAL_ASSETS_INVENTORY.md": 9793,
+      "README-validator.md": 3875,
+      "validate-sbm-log.js": 4266,
+      "sbm_config.yaml": 1435,
+      ".gitignore": 710,
+      "DIGITAL_ASSETS_REPORT.json": 6166,
+      "README.md": 10275,
+      "SUMMARY.md": 6749,
+      "check_coverage.py": 5121,
+      "pyproject.toml": 1189,
+      "sbm_log_schema.json": 3835,
+      "package.json": 406,
+      ".coveragerc": 626,
+      "IMPROVEMENTS.md": 11824,
+      "generate_audit_report.py": 9194,
+      "gate_runner.py": 4656,
+      "LICENSE.APACHE2": 11357,
+      "check_digital_assets.py": 13869,
+      "fault_engine.py": 11549,
+      "Makefile": 4009,
+      "PHYSICAL_CONSTANTS.md": 843,
+      ".github/workflows/ci.yml": 2041,
+      ".github/workflows/validation-gate.yml": 4605,
+      "samples/valid.json": 375,
+      "samples/valid.ndjson": 607,
+      "samples/invalid.json": 63,
+      "evidence/SBM-001_spatial/overflow_violation.json": 652,
+      "evidence/SBM-001_spatial/memory_map_before_after.bin": 581,
+      "evidence/SBM-010_observability/atomic_snapshot.json": 1181,
+      "evidence/SBM-010_observability/snapshot_metadata.json": 856,
+      "evidence/SBM-004_existential/null_deref_snapshot.json": 812,
+      "evidence/SBM-009_numerical/drift_envelope_violation.json": 1209,
+      "evidence/SBM-009_numerical/stability_plot.csv": 157,
+      "evidence/SBM-007_sampling/trajectory_gap_snapshot.json": 857,
+      "evidence/SBM-007_sampling/monitor_timing.log": 1037,
+      "docs/sbm-014-human.md": 7027,
+      "docs/SBM-014-HUMAN-CAUSAL-ECHO.md": 5580,
+      "docs/SAFETY_MANUAL.md": 17526,
+      "tests/test_seeding.py": 7957,
+      "tests/test_report_normalization.py": 5902,
+      "tests/test_audit_snapshots.py": 6116,
+      "tests/fault_injection.c": 3181,
+      "tests/test_digital_assets.py": 7731,
+      "tests/test_log_validation.py": 11666,
+      "tests/unit_tests.c": 5572,
+      "tests/golden/AUDIT_REPORT_GOLDEN.md": 1605,
+      "include/sbm_snapshot.h": 4305,
+      "include/sbm_types.h": 2280,
+      "include/sbm_harness.h": 5625,
+      "src/state_manager.c": 3715,
+      "src/sbm_snapshot.c": 8854,
+      "src/core_guards.c": 2198
+    },
+    "total_size": 291663
+  },
+  "conflicts": {
+    "naming": {},
+    "content": {},
+    "license": {
+      "files": [
+        "LICENSE",
+        "LICENSE.APACHE2"
+      ],
+      "count": 2,
+      "has_conflict": false,
+      "is_dual_license": true
+    },
+    "dependencies": {
+      "requirements.txt": {
+        "count": 1,
+        "files": [
+          "requirements.txt"
+        ],
+        "has_conflict": false
+      },
+      "package.json": {
+        "count": 1,
+        "files": [
+          "package.json"
+        ],
+        "has_conflict": false
+      },
+      "pyproject.toml": {
+        "count": 1,
+        "files": [
+          "pyproject.toml"
+        ],
+        "has_conflict": false
+      }
+    },
+    "configuration": {}
+  }
+}
