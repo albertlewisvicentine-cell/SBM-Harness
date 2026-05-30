@@ -48,6 +48,23 @@ class TestEventValidator(unittest.TestCase):
         self.assertIsNone(validated)
         self.assertTrue(any("Subsystem mismatch" in msg for msg in logs.output))
 
+    def test_validated_definition_mutation_does_not_affect_registry(self):
+        registry = {
+            "DefaultSubsystem": "CORE",
+            "Events": {
+                "SBM-003": {
+                    "Code": "SBM-003",
+                    "Subsystem": "CORE",
+                    "meta": {"tags": ["safe"]},
+                }
+            },
+        }
+        validator = EventValidator(registry)
+        validated = validator.validate({"code": "SBM-003", "payload": {}})
+        self.assertIsNotNone(validated)
+        validated.definition["meta"]["tags"].append("mutated")
+        self.assertEqual(registry["Events"]["SBM-003"]["meta"]["tags"], ["safe"])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

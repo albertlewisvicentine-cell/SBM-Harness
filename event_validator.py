@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import logging
+import copy
 from dataclasses import dataclass, field
 from typing import Any, Dict, Mapping, Optional
 
@@ -96,13 +97,13 @@ class EventValidator:
         if isinstance(events, Mapping):
             definition = events.get(code)
             if isinstance(definition, Mapping):
-                return dict(definition)
+                return copy.deepcopy(definition)
             return None
 
         if isinstance(events, list):
             for item in events:
                 if isinstance(item, Mapping) and item.get("Code") == code:
-                    return dict(item)
+                    return copy.deepcopy(item)
                 if isinstance(item, Mapping) and item.get("code") == code:
-                    return dict(item)
+                    return copy.deepcopy(item)
         return None
