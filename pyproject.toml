@@ -9,6 +9,7 @@ description = "Safe Bounded Memory (SBM) Test Harness with Physics-Based Fault I
 requires-python = ">=3.11"
 dependencies = [
     "PyYAML==6.0.1",
+    "numpy==2.1.3",
     "pytest==7.4.3",
     "pytest-cov==4.1.0",
     "pytest-snapshot==0.9.0",
