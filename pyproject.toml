@@ -18,9 +18,15 @@ dependencies = [
     "openpyxl==3.1.2",
 ]
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = ["tests"]
+testpaths = ["tests/python"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -28,7 +34,8 @@ addopts = [
     "-v",
     "--tb=short",
     "--strict-markers",
-    "--cov=.",
+    "--cov=src",
+    "--cov=scripts",
     "--cov-branch",
     "--cov-report=term-missing",
     "--cov-report=html",
@@ -36,7 +43,7 @@ addopts = [
 
 [tool.coverage.run]
 branch = true
-source = ["."]
+source = ["src", "scripts"]
 omit = [
     "tests/*",
     "build/*",

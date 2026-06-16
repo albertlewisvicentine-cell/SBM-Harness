@@ -186,7 +186,7 @@ sbm_status_t update_sensor_fusion(sensor_state_t *state) {
 ### Runtime
 - Checksum validation after every critical state update
 - Snapshot/rollback on all error paths
-- Log validation via `sbm_log_validator.py` before commit
+- Log validation via `src/sbm_harness/sbm_log_validator.py` before commit
 
 ### Audit
 - Review all state-changing functions for SBM-014 compliance
@@ -215,7 +215,7 @@ All code claiming SBM-014 compliance must pass:
 3. **Log validation**: All state changes appear in logs with schema compliance
 4. **Snapshot stress**: Verify snapshot/commit/rollback under high frequency
 
-See `tests/fault_injection.c` for reference test patterns.
+See `tests/c/fault_injection.c` for reference test patterns.
 
 ---
 
@@ -225,7 +225,7 @@ See `tests/fault_injection.c` for reference test patterns.
 - `include/sbm_snapshot.h` - Snapshot/rollback API
 - `include/sbm_harness.h` - Guard macros (GUARD_PTR, SBM_ASSERT)
 - `sbm_log_schema.json` - Log entry schema specification
-- `sbm_log_validator.py` - Log validation tool
+- `src/sbm_harness/sbm_log_validator.py` - Log validation tool
 
 ---
 

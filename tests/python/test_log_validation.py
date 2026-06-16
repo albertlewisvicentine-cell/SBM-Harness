@@ -8,7 +8,8 @@ import json
 import tempfile
 from pathlib import Path
 from jsonschema import ValidationError
-from sbm_log_validator import SBMLogValidator, validate_log_entries
+
+from sbm_harness.sbm_log_validator import SBMLogValidator, validate_log_entries
 
 
 class TestSBMLogValidator(unittest.TestCase):

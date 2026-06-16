@@ -18,7 +18,8 @@ from collections import defaultdict
 from typing import Dict, List, Set, Tuple
 
 # Repository root
-REPO_ROOT = Path(__file__).parent
+REPO_ROOT = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = REPO_ROOT / "artifacts"
 
 # Directories to exclude
 EXCLUDE_DIRS = {'.git', '__pycache__', '.pytest_cache', 'node_modules', '.venv', 'venv'}
@@ -343,7 +344,8 @@ def main():
                 print(f"  - {path.relative_to(REPO_ROOT)}")
     
     # Save detailed report to JSON
-    report_file = REPO_ROOT / 'DIGITAL_ASSETS_REPORT.json'
+    ARTIFACTS_DIR.mkdir(exist_ok=True)
+    report_file = ARTIFACTS_DIR / 'DIGITAL_ASSETS_REPORT.json'
     print(f"\n💾 Saving detailed report to: {report_file}")
     
     report_data = {

@@ -1,6 +1,6 @@
 import pytest
 
-from renderer import DriftRenderer, generate_fault_bloom_events
+from sbm_harness.renderer import DriftRenderer, generate_fault_bloom_events
 
 
 class FakeCell:

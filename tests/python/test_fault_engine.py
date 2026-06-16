@@ -4,8 +4,8 @@ Unit tests for fault_engine.py - PhysicsDerivedInjector class.
 """
 
 import unittest
-import math
-from fault_engine import PhysicsDerivedInjector, Environment
+
+from sbm_harness.fault_engine import PhysicsDerivedInjector, Environment
 
 
 class TestEnvironment(unittest.TestCase):

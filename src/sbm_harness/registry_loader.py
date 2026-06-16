@@ -20,7 +20,7 @@ from typing import Union
 
 import openpyxl
 
-from models import Registry, RegistryEntry
+from .models import Registry, RegistryEntry
 
 # ---------------------------------------------------------------------------
 # Required column names (case-sensitive, must appear in the header row)

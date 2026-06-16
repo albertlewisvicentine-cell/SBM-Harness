@@ -89,13 +89,13 @@ pip install -r requirements.txt
 Check for any conflicts in digital assets:
 
 ```bash
-python3 check_digital_assets.py
+python3 scripts/check_digital_assets.py
 ```
 
 This will:
 - Inventory all 64 files in the repository
 - Check for naming conflicts, content duplication, and license conflicts
-- Generate detailed reports (`DIGITAL_ASSETS_REPORT.json` and `DIGITAL_ASSETS_INVENTORY.md`)
+- Generate detailed reports (`artifacts/DIGITAL_ASSETS_REPORT.json` and `artifacts/DIGITAL_ASSETS_INVENTORY.md`)
 - Return exit code 0 if no conflicts found
 
 ### **Basic Usage**
@@ -133,23 +133,17 @@ The repository includes comprehensive fault injection scenarios:
 ### **Run All Tests**
 
 ```bash
-python -m pytest tests/fault_injection/
+PYTHONPATH=.:src python -m pytest tests/python/
 ```
 
 ### **Specific Scenarios**
 
 ```bash
-# Zombie permit attack (replay with stale sequence IDs)
-python tests/fault_injection/test_zombie_permits.py
+# Python validation suite
+PYTHONPATH=.:src python -m pytest tests/python/test_seeding.py -v
 
-# Observer heartbeat failure
-python tests/fault_injection/test_heartbeat_loss.py
-
-# Pressure spike (system under load)
-python tests/fault_injection/test_pressure_response.py
-
-# Temporal violations (out-of-order events)
-python tests/fault_injection/test_temporal_drift.py
+# C unit and fault-injection suite
+make test
 ```
 
 ### **Expected Results**

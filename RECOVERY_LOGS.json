@@ -8,7 +8,7 @@
     "fault_id": "FI-001",
     "description": "Array bounds overflow injection",
     "location": {
-      "file": "src/state_manager.c",
+      "file": "src/c/state_manager.c",
       "line": 87,
       "function": "sbm_snapshot_state"
     },
@@ -45,7 +45,7 @@
     "fault_id": "FI-002",
     "description": "NULL pointer dereference injection",
     "location": {
-      "file": "tests/unit_tests.c",
+      "file": "tests/c/unit_tests.c",
       "line": 142,
       "function": "test_null_guard"
     },
@@ -81,7 +81,7 @@
     "fault_id": "FI-003",
     "description": "Integer overflow injection",
     "location": {
-      "file": "tests/unit_tests.c",
+      "file": "tests/c/unit_tests.c",
       "line": 256,
       "function": "test_loop_bound_guard"
     },
@@ -120,7 +120,7 @@
     "fault_id": "FI-004",
     "description": "Unbounded loop injection",
     "location": {
-      "file": "tests/fault_injection.c",
+      "file": "tests/c/fault_injection.c",
       "line": 89,
       "function": "test_loop_limit"
     },
@@ -156,7 +156,7 @@
     "fault_id": "FI-005",
     "description": "Error status ignored injection",
     "location": {
-      "file": "tests/unit_tests.c",
+      "file": "tests/c/unit_tests.c",
       "line": 198,
       "function": "test_status_propagation"
     },

@@ -44,12 +44,12 @@ seed = injector.get_effective_seed()
 env:
   SBM_FAULT_SEED: 42
 run: |
-  python simulation.py --seed 42 --out results.jsonl
+  PYTHONPATH=src python -m sbm_harness.simulation --seed 42 --out results.jsonl
 ```
 
 **Files Modified**:
-- `fault_engine.py` - Added seeding support
-- `tests/test_seeding.py` - Comprehensive seeding tests
+- `src/sbm_harness/fault_engine.py` - Added seeding support
+- `tests/python/test_seeding.py` - Comprehensive seeding tests
 - `RECOVERY_LOGS.json` - Added `seed` field to all entries
 
 ### 2. Golden/Snapshot Testing for Generated Audit Reports
@@ -61,43 +61,43 @@ run: |
   - Timestamps → fixed `2026-01-01T00:00:00.000Z`
   - Paths → relative `SBM-Harness/...`
   - Floats → rounded to 6 decimal places
-- Golden snapshots stored in `tests/golden/`
+- Golden snapshots stored in `tests/python/golden/`
 - Snapshot tests verify normalized output matches golden
 
 **Usage**:
 ```python
-from generate_audit_report import normalize_report_for_snapshot
+from scripts.generate_audit_report import normalize_report_for_snapshot
 
 # Generate report
 generate_audit_report()
 
 # Normalize for comparison
-report = Path('AUDIT_REPORT_AUTO.md').read_text()
+report = Path('artifacts/AUDIT_REPORT_AUTO.md').read_text()
 normalized = normalize_report_for_snapshot(report)
 
 # Compare against golden
-golden = Path('tests/golden/AUDIT_REPORT_GOLDEN.md').read_text()
+golden = Path('tests/python/golden/AUDIT_REPORT_GOLDEN.md').read_text()
 assert normalized == golden
 ```
 
 **Update Golden Snapshot**:
 ```bash
-python generate_audit_report.py
+python scripts/generate_audit_report.py
 python -c "
-from generate_audit_report import normalize_report_for_snapshot
+from scripts.generate_audit_report import normalize_report_for_snapshot
 from pathlib import Path
-report = Path('AUDIT_REPORT_AUTO.md').read_text()
-Path('tests/golden/AUDIT_REPORT_GOLDEN.md').write_text(
+report = Path('artifacts/AUDIT_REPORT_AUTO.md').read_text()
+Path('tests/python/golden/AUDIT_REPORT_GOLDEN.md').write_text(
     normalize_report_for_snapshot(report)
 )
 "
 ```
 
 **Files Added**:
-- `generate_audit_report.py` - Normalization functions
-- `tests/test_audit_snapshots.py` - Snapshot tests
-- `tests/test_report_normalization.py` - Normalization tests
-- `tests/golden/AUDIT_REPORT_GOLDEN.md` - Golden snapshot
+- `scripts/generate_audit_report.py` - Normalization functions
+- `tests/python/test_audit_snapshots.py` - Snapshot tests
+- `tests/python/test_report_normalization.py` - Normalization tests
+- `tests/python/golden/AUDIT_REPORT_GOLDEN.md` - Golden snapshot
 
 ### 3. Hermetic/Pinned Environment in CI
 
@@ -136,20 +136,20 @@ pip-sync requirements.txt
 **Solution**:
 - pytest-cov with branch coverage enabled
 - Hard thresholds for safety-critical modules:
-  - `fault_engine.py`: ≥95% branch coverage
-  - `sbm_log_validator.py`: ≥90% branch coverage
+  - `src/sbm_harness/fault_engine.py`: ≥95% branch coverage
+  - `src/sbm_harness/sbm_log_validator.py`: ≥90% branch coverage
 - Overall threshold: ≥80% (not enforced yet)
 - Coverage reports uploaded as CI artifacts
 
 **Current Coverage**:
-- `sbm_log_validator.py`: **97.33%** ✅ (exceeds 90% threshold)
-- `fault_engine.py`: **74.39%** (target: 95%)
+- `src/sbm_harness/sbm_log_validator.py`: **97.33%** ✅ (exceeds 90% threshold)
+- `src/sbm_harness/fault_engine.py`: **74.39%** (target: 95%)
 - Overall: **27.87%** (many scripts not yet tested)
 
 **Run Coverage**:
 ```bash
 # Run tests with coverage
-PYTHONPATH=. pytest tests/ -v --cov=. --cov-branch --cov-report=term --cov-report=html
+PYTHONPATH=.:src pytest tests/python/ -v --cov=src --cov=scripts --cov-branch --cov-report=term --cov-report=html
 
 # View HTML report
 open build/coverage_html/index.html
@@ -190,10 +190,10 @@ python check_coverage.py
 **Validate Logs**:
 ```bash
 # Validate a log file
-python sbm_log_validator.py RECOVERY_LOGS.json
+PYTHONPATH=src python -m sbm_harness.sbm_log_validator RECOVERY_LOGS.json
 
 # In Python code
-from sbm_log_validator import SBMLogValidator
+from sbm_harness.sbm_log_validator import SBMLogValidator
 
 validator = SBMLogValidator()
 validator.validate_entry(log_entry)  # Raises ValidationError if invalid
@@ -204,8 +204,8 @@ valid_count, errors = validator.validate_log_file(Path("logs.json"))
 
 **Files Added**:
 - `sbm_log_schema.json` - JSON Schema definition
-- `sbm_log_validator.py` - Validation module
-- `tests/test_log_validation.py` - Validation tests
+- `src/sbm_harness/sbm_log_validator.py` - Validation module
+- `tests/python/test_log_validation.py` - Validation tests
 - Updated `RECOVERY_LOGS.json` - Added schema_version and seed fields
 
 ### 6. Non-Deterministic Floating-Point Handling
@@ -233,8 +233,8 @@ def normalize_report_for_snapshot(content: str) -> str:
 ```
 
 **Files Modified**:
-- `generate_audit_report.py` - Float normalization
-- `tests/test_report_normalization.py` - Float handling tests
+- `scripts/generate_audit_report.py` - Float normalization
+- `tests/python/test_report_normalization.py` - Float handling tests
 
 ## CI/CD Pipeline
 
@@ -284,29 +284,29 @@ tests/
 ### Run Tests
 ```bash
 # All tests
-PYTHONPATH=. pytest tests/ -v
+PYTHONPATH=.:src pytest tests/python/ -v
 
 # With coverage
-PYTHONPATH=. pytest tests/ -v --cov=. --cov-branch --cov-report=html
+PYTHONPATH=.:src pytest tests/python/ -v --cov=src --cov=scripts --cov-branch --cov-report=html
 
 # Specific module
-PYTHONPATH=. pytest tests/test_seeding.py -v
+PYTHONPATH=.:src pytest tests/python/python/test_seeding.py -v
 
 # Update snapshots (if intentional change)
 # Regenerate golden report after verified changes
-python generate_audit_report.py
+python scripts/generate_audit_report.py
 python -c "
-from generate_audit_report import normalize_report_for_snapshot
+from scripts.generate_audit_report import normalize_report_for_snapshot
 from pathlib import Path
-Path('tests/golden/AUDIT_REPORT_GOLDEN.md').write_text(
-    normalize_report_for_snapshot(Path('AUDIT_REPORT_AUTO.md').read_text())
+Path('tests/python/golden/AUDIT_REPORT_GOLDEN.md').write_text(
+    normalize_report_for_snapshot(Path('artifacts/AUDIT_REPORT_AUTO.md').read_text())
 )
 "
 ```
 
 ## Future Work
 
-1. **Increase fault_engine.py coverage to ≥95%**
+1. **Increase src/sbm_harness/fault_engine.py coverage to ≥95%**
    - Add tests for edge cases in timing jitter calculation
    - Test all branches in bit flip probability calculation
 
@@ -347,7 +347,7 @@ injector = PhysicsDerivedInjector(env, seed=42)  # Deterministic
 Add `schema_version` and `seed` to existing log entries:
 
 ```python
-from sbm_log_validator import SBMLogValidator
+from sbm_harness.sbm_log_validator import SBMLogValidator
 
 validator = SBMLogValidator()
 
@@ -371,7 +371,7 @@ Update your workflow to:
 ### Schema Validation Failures
 ```bash
 # Check which entries are invalid
-python sbm_log_validator.py RECOVERY_LOGS.json
+PYTHONPATH=src python -m sbm_harness.sbm_log_validator RECOVERY_LOGS.json
 
 # Common issues:
 # - Missing schema_version field → Add "schema_version": "1.0"
@@ -382,17 +382,17 @@ python sbm_log_validator.py RECOVERY_LOGS.json
 ### Snapshot Test Failures
 ```bash
 # If test fails, check diff
-diff AUDIT_REPORT_AUTO.md tests/golden/AUDIT_REPORT_GOLDEN.md
+diff artifacts/AUDIT_REPORT_AUTO.md tests/python/golden/AUDIT_REPORT_GOLDEN.md
 
 # If change is intentional, update golden:
-python generate_audit_report.py
+python scripts/generate_audit_report.py
 python -c "..."  # See command above
 ```
 
 ### Coverage Issues
 ```bash
 # Generate detailed coverage report
-PYTHONPATH=. pytest tests/ --cov=. --cov-report=html
+PYTHONPATH=.:src pytest tests/python/ --cov=src --cov=scripts --cov-report=html
 # Open build/coverage_html/index.html
 
 # Find uncovered lines

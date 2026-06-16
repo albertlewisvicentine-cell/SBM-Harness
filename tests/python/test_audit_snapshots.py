@@ -6,11 +6,16 @@ Tests that reports remain stable and comparable across runs.
 
 import unittest
 from pathlib import Path
-from generate_audit_report import generate_audit_report, normalize_report_for_snapshot
+
+from scripts.generate_audit_report import generate_audit_report, normalize_report_for_snapshot
 
 
 class TestAuditReportSnapshots(unittest.TestCase):
     """Snapshot tests for audit report generation."""
+
+    @staticmethod
+    def _report_path() -> Path:
+        return Path(__file__).resolve().parents[2] / "artifacts" / "AUDIT_REPORT_AUTO.md"
     
     def test_audit_report_golden_match(self):
         """Test that generated report matches golden snapshot after normalization."""
@@ -18,7 +23,7 @@ class TestAuditReportSnapshots(unittest.TestCase):
         generate_audit_report()
         
         # Read generated report
-        generated_path = Path("AUDIT_REPORT_AUTO.md")
+        generated_path = self._report_path()
         self.assertTrue(generated_path.exists(), "Report should be generated")
         
         generated_content = generated_path.read_text()
@@ -39,16 +44,16 @@ class TestAuditReportSnapshots(unittest.TestCase):
             golden_content,
             "Normalized generated report should match golden snapshot. "
             "If this is expected, update the golden file with:\n"
-            f"  python -c \"from generate_audit_report import normalize_report_for_snapshot; "
+            f"  python -c \"from scripts.generate_audit_report import normalize_report_for_snapshot; "
             f"from pathlib import Path; "
-            f"Path('{golden_path}').write_text(normalize_report_for_snapshot(Path('AUDIT_REPORT_AUTO.md').read_text()))\""
+            f"Path('{golden_path}').write_text(normalize_report_for_snapshot(Path('{generated_path}').read_text()))\""
         )
     
     def test_report_structure_sections(self):
         """Test that generated report contains all expected sections."""
         generate_audit_report()
         
-        report_path = Path("AUDIT_REPORT_AUTO.md")
+        report_path = self._report_path()
         content = report_path.read_text()
         
         # Check for key sections
@@ -68,7 +73,7 @@ class TestAuditReportSnapshots(unittest.TestCase):
         """Test that safety goals table is present and formatted correctly."""
         generate_audit_report()
         
-        report_path = Path("AUDIT_REPORT_AUTO.md")
+        report_path = self._report_path()
         content = report_path.read_text()
         
         # Check for table header
@@ -83,7 +88,7 @@ class TestAuditReportSnapshots(unittest.TestCase):
         """Test that overall statistics are included."""
         generate_audit_report()
         
-        report_path = Path("AUDIT_REPORT_AUTO.md")
+        report_path = self._report_path()
         content = report_path.read_text()
         
         # Should have overall recovery rate
@@ -99,7 +104,7 @@ class TestAuditReportSnapshots(unittest.TestCase):
         """Test that report normalization is idempotent."""
         generate_audit_report()
         
-        report_path = Path("AUDIT_REPORT_AUTO.md")
+        report_path = self._report_path()
         original = report_path.read_text()
         
         # Normalize twice
@@ -125,11 +130,11 @@ class TestGoldenFileManagement(unittest.TestCase):
         golden_path = Path(__file__).parent / "golden" / "AUDIT_REPORT_GOLDEN.md"
         self.assertTrue(golden_path.exists(), 
                        "Golden audit report should exist. Generate it with:\n"
-                       "  python generate_audit_report.py && "
-                       "  python -c \"from generate_audit_report import normalize_report_for_snapshot; "
+                       "  python scripts/generate_audit_report.py && "
+                       "  python -c \"from scripts.generate_audit_report import normalize_report_for_snapshot; "
                        "from pathlib import Path; "
-                       "Path('tests/golden/AUDIT_REPORT_GOLDEN.md').write_text("
-                       "normalize_report_for_snapshot(Path('AUDIT_REPORT_AUTO.md').read_text()))\"")
+                       "Path('tests/python/golden/AUDIT_REPORT_GOLDEN.md').write_text("
+                       "normalize_report_for_snapshot(Path('artifacts/AUDIT_REPORT_AUTO.md').read_text()))\"")
     
     def test_golden_report_valid_markdown(self):
         """Test that golden report is valid markdown."""

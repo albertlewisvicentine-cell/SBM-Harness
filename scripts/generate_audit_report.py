@@ -1,9 +1,10 @@
 import json
-import yaml
+import re
 from datetime import datetime, timezone
 from pathlib import Path
-import re
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
+import yaml
 
 
 # ────────────────────────────────────────────────
@@ -91,10 +92,12 @@ def normalize_report_for_snapshot(content: str) -> str:
 # ────────────────────────────────────────────────
 # CONFIG & FILE PATHS (customize these)
 # ────────────────────────────────────────────────
-PHYS_CONSTANTS_MD = Path("PHYSICAL_CONSTANTS.md")   # Your constants table in markdown
-SBM_CONFIG_YAML   = Path("sbm_config.yaml")
-RECOVERY_LOGS_JSON = Path("RECOVERY_LOGS.json")
-OUTPUT_MD         = Path("AUDIT_REPORT_AUTO.md")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = REPO_ROOT / "artifacts"
+PHYS_CONSTANTS_MD = REPO_ROOT / "PHYSICAL_CONSTANTS.md"
+SBM_CONFIG_YAML = REPO_ROOT / "sbm_config.yaml"
+RECOVERY_LOGS_JSON = REPO_ROOT / "RECOVERY_LOGS.json"
+OUTPUT_MD = ARTIFACTS_DIR / "AUDIT_REPORT_AUTO.md"
 
 # ────────────────────────────────────────────────
 # Helper: Parse simple key-value table from PHYSICAL_CONSTANTS.md
@@ -132,6 +135,7 @@ def parse_physical_constants_md(md_path: Path) -> Dict[str, Dict[str, str]]:
 # ────────────────────────────────────────────────
 def generate_audit_report():
     now = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+    ARTIFACTS_DIR.mkdir(exist_ok=True)
 
     # 1. Load physical constants
     phys_consts = parse_physical_constants_md(PHYS_CONSTANTS_MD)
@@ -227,6 +231,7 @@ def generate_audit_report():
         f.write("\n".join(md_lines))
 
     print(f"Audit report generated → {OUTPUT_MD}")
+    return OUTPUT_MD
 
 if __name__ == "__main__":
     try:

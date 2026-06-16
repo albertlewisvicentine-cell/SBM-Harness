@@ -10,7 +10,7 @@ The validation gate consists of two jobs that run automatically on pull requests
 **Purpose**: Verify that Python and C implementations produce identical results.
 
 This gate:
-- Runs both Python (`simulation.py`) and C (`sim.c`) simulations with the same seed
+- Runs both Python (`src/sbm_harness/simulation.py`) and C (`src/c/sim.c`) simulations with the same seed
 - Compares outputs within a relative tolerance (`rtol=1e-7`)
 - **Fails if** the implementations diverge, indicating a broken implementation
 
@@ -32,13 +32,13 @@ This gate:
 - `.github/workflows/validation-gate.yml` - GitHub Actions workflow definition
 
 ### Simulation Scripts
-- `simulation.py` - Python reference implementation with Simple LCG
-- `sim.c` - C implementation with matching LCG for exact reproducibility
-- `repro_compare.py` - Parity comparison tool (checks Python vs C outputs)
+- `src/sbm_harness/simulation.py` - Python reference implementation with Simple LCG
+- `src/c/sim.c` - C implementation with matching LCG for exact reproducibility
+- `scripts/repro_compare.py` - Parity comparison tool (checks Python vs C outputs)
 
 ### Statistical Analysis Scripts
-- `run_batch.py` - Batch Monte Carlo simulation runner
-- `safety_gate.py` - Wilson confidence interval evaluator
+- `scripts/run_batch.py` - Batch Monte Carlo simulation runner
+- `src/sbm_harness/safety_gate.py` - Wilson confidence interval evaluator
 
 ## Usage
 
@@ -64,23 +64,23 @@ make repro-check && make safety-gate
 #### Test Reproducibility (Gate 1)
 ```bash
 # Run Python simulation
-python simulation.py --seed 42 --out py_trace.jsonl
+PYTHONPATH=src python -m sbm_harness.simulation --seed 42 --out py_trace.jsonl
 
 # Compile and run C simulation  
-gcc -O3 sim.c -o sim_c -lm
+gcc -O3 src/c/sim.c -o sim_c -lm
 ./sim_c --seed 42 --out c_trace.jsonl
 
 # Compare outputs
-python repro_compare.py py_trace.jsonl c_trace.jsonl --rtol 1e-7
+python scripts/repro_compare.py py_trace.jsonl c_trace.jsonl --rtol 1e-7
 ```
 
 #### Test Statistical Safety (Gate 2)
 ```bash
 # Run batch simulation (1000 trials)
-python run_batch.py --trials 1000 --out results.jsonl
+python scripts/run_batch.py --trials 1000 --out results.jsonl
 
 # Evaluate safety with Wilson CI
-python safety_gate.py results.jsonl --p_max 0.01
+PYTHONPATH=src python -m sbm_harness.safety_gate results.jsonl --p_max 0.01
 ```
 
 ### Interpreting Results

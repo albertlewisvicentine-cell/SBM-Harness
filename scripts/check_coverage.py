@@ -147,7 +147,7 @@ def check_coverage_thresholds() -> bool:
         print("\nTo improve coverage:")
         print("  1. Add more test cases for uncovered code paths")
         print("  2. Focus on branch coverage (if/else, try/except, loops)")
-        print("  3. Run: PYTHONPATH=. coverage run -m pytest tests/ -v")
+        print("  3. Run: PYTHONPATH=.:src coverage run -m pytest tests/python/ -v")
         print("  4. Then: coverage report -m to see missing lines")
         return False
 

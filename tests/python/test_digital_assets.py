@@ -5,13 +5,9 @@ Tests for digital assets inventory and conflict verification tool.
 
 import unittest
 import json
-import os
 from pathlib import Path
-import sys
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-import check_digital_assets
+from scripts import check_digital_assets
 
 
 class TestDigitalAssetsChecker(unittest.TestCase):
@@ -19,7 +15,7 @@ class TestDigitalAssetsChecker(unittest.TestCase):
     
     def setUp(self):
         """Set up test environment."""
-        self.repo_root = Path(__file__).parent.parent
+        self.repo_root = Path(__file__).resolve().parents[2]
         self.test_files = list(check_digital_assets.get_all_files())
         
     def test_file_discovery(self):
@@ -143,7 +139,7 @@ class TestDigitalAssetsChecker(unittest.TestCase):
     
     def test_report_json_output(self):
         """Test that JSON report can be generated and parsed."""
-        report_file = self.repo_root / 'DIGITAL_ASSETS_REPORT.json'
+        report_file = self.repo_root / 'artifacts' / 'DIGITAL_ASSETS_REPORT.json'
         
         # Report should exist after running the script
         if report_file.exists():

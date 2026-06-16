@@ -3,7 +3,7 @@
 
 import unittest
 
-from event_validator import Event, EventValidator, ValidatedEvent
+from sbm_harness.event_validator import Event, EventValidator, ValidatedEvent
 
 
 class TestEventValidator(unittest.TestCase):

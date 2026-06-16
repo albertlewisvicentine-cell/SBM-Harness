@@ -4,7 +4,8 @@ Tests for audit report generation and normalization.
 """
 
 import unittest
-from generate_audit_report import (
+
+from scripts.generate_audit_report import (
     normalize_timestamp,
     normalize_float,
     normalize_report_for_snapshot
@@ -89,7 +90,7 @@ class TestReportNormalization(unittest.TestCase):
         report = """
 # Audit Report
 **Generated:** 2026-01-25T19:30:42.123Z
-**Path:** /home/runner/work/SBM-Harness/SBM-Harness/generate_audit_report.py
+**Path:** /home/runner/work/SBM-Harness/SBM-Harness/scripts/generate_audit_report.py
 
 ## Results
 - Probability: 0.000123456789
@@ -105,7 +106,7 @@ class TestReportNormalization(unittest.TestCase):
         
         # Check path normalization
         self.assertNotIn("/home/runner/work/", normalized)
-        self.assertIn("SBM-Harness/generate_audit_report.py", normalized)
+        self.assertIn("SBM-Harness/scripts/generate_audit_report.py", normalized)
         
         # Check float rounding
         self.assertNotIn("0.000123456789", normalized)

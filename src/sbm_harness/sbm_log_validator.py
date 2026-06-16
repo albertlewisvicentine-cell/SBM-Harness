@@ -24,8 +24,8 @@ class SBMLogValidator:
             schema_path: Path to JSON schema file. Defaults to sbm_log_schema.json
         """
         if schema_path is None:
-            # Default to schema in same directory as this script
-            schema_path = Path(__file__).parent / "sbm_log_schema.json"
+            # Default to schema in repository root
+            schema_path = Path(__file__).resolve().parents[2] / "sbm_log_schema.json"
         
         with open(schema_path, 'r') as f:
             self.schema = json.load(f)
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python sbm_log_validator.py <log_file>")
+        print("Usage: PYTHONPATH=src python -m sbm_harness.sbm_log_validator <log_file>")
         sys.exit(1)
     
     log_file = Path(sys.argv[1])

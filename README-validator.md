@@ -14,7 +14,7 @@ A Node.js validator for SBM-Harness log entries using [AJV](https://ajv.js.org/)
 ## Installation
 
 ```bash
-npm install
+cd src/js && npm install
 ```
 
 This will install the required dependency: `ajv` (v8.12.0+)
@@ -25,23 +25,23 @@ This will install the required dependency: `ajv` (v8.12.0+)
 
 **Validate a single JSON file:**
 ```bash
-node validate-sbm-log.js samples/valid.json
+node src/js/validate-sbm-log.js samples/valid.json
 ```
 
 **Validate a JSON array:**
 ```bash
-node validate-sbm-log.js RECOVERY_LOGS.json
+node src/js/validate-sbm-log.js RECOVERY_LOGS.json
 ```
 
 **Validate NDJSON (one JSON object per line):**
 ```bash
-node validate-sbm-log.js samples/valid.ndjson
+node src/js/validate-sbm-log.js samples/valid.ndjson
 ```
 
 ### Programmatic Usage
 
 ```javascript
-const { validateLog } = require('./validate-sbm-log');
+const { validateLog } = require('./src/js/validate-sbm-log');
 
 const logEntry = {
   schema_version: "1.0",
@@ -107,7 +107,7 @@ The validator provides human-friendly error messages:
 
 ## Comparison with Python Validator
 
-This Node.js validator (`validate-sbm-log.js`) complements the existing Python validator (`sbm_log_validator.py`):
+This Node.js validator (`src/js/validate-sbm-log.js`) complements the existing Python validator (`src/sbm_harness/sbm_log_validator.py`):
 
 | Feature | Node.js | Python |
 |---------|---------|--------|

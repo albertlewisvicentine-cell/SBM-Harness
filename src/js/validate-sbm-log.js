@@ -21,7 +21,7 @@ ajv.addFormat('date-time', {
 });
 
 // Load your exact schema
-const schemaPath = path.join(__dirname, 'sbm_log_schema.json');
+const schemaPath = path.join(__dirname, '..', '..', 'sbm_log_schema.json');
 let schema;
 try {
   schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));

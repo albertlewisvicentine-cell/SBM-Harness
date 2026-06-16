@@ -16,18 +16,18 @@ This implementation successfully delivers all 6 critical improvements requested 
 - 14 comprehensive tests ensuring reproducibility
 - CI enforces seed=42 for parity checks
 
-**Files**: `fault_engine.py`, `tests/test_seeding.py`
+**Files**: `src/sbm_harness/fault_engine.py`, `tests/python/test_seeding.py`
 
 ### 2. ✅ Golden/Snapshot Testing for Generated Audit Reports
 **Impact**: Eliminates false CI failures from dynamic content
 
 - Normalization functions for timestamps, floats, paths
-- Golden snapshot: `tests/golden/AUDIT_REPORT_GOLDEN.md`
+- Golden snapshot: `tests/python/golden/AUDIT_REPORT_GOLDEN.md`
 - 8 snapshot tests + 10 normalization tests
 - Idempotent normalization ensures consistency
 - Easy snapshot updates for intentional changes
 
-**Files**: `generate_audit_report.py`, `tests/test_audit_snapshots.py`, `tests/test_report_normalization.py`
+**Files**: `scripts/generate_audit_report.py`, `tests/python/test_audit_snapshots.py`, `tests/python/test_report_normalization.py`
 
 ### 3. ✅ Hermetic/Pinned Environment in CI
 **Impact**: Reproducibility across all systems
@@ -48,8 +48,8 @@ This implementation successfully delivers all 6 critical improvements requested 
 
 - Branch coverage enabled via pytest-cov
 - Critical module thresholds:
-  - `sbm_log_validator.py`: ≥90% (achieved: **97.33%** ✅)
-  - `fault_engine.py`: ≥95% (current: 74.39%, room for improvement)
+  - `src/sbm_harness/sbm_log_validator.py`: ≥90% (achieved: **97.33%** ✅)
+  - `src/sbm_harness/fault_engine.py`: ≥95% (current: 74.39%, room for improvement)
 - Coverage reports in CI artifacts
 - 47 passing tests (100% success rate)
 
@@ -61,12 +61,12 @@ This implementation successfully delivers all 6 critical improvements requested 
 - JSON Schema v1.0 for SBM_LOG_ENTRY
 - Required fields: `schema_version`, `event_type`, `timestamp`
 - Optional fields: `seed`, `gsn_ref`, `fault_id`, `outcome`, etc.
-- `sbm_log_validator.py` CLI tool + Python module
+- `src/sbm_harness/sbm_log_validator.py` CLI tool + Python module
 - 16 validation tests covering all edge cases
 - CI gate validates all logs automatically
 - All 10 entries in RECOVERY_LOGS.json validated ✅
 
-**Files**: `sbm_log_schema.json`, `sbm_log_validator.py`, `tests/test_log_validation.py`, `RECOVERY_LOGS.json`
+**Files**: `sbm_log_schema.json`, `src/sbm_harness/sbm_log_validator.py`, `tests/python/test_log_validation.py`, `RECOVERY_LOGS.json`
 
 ### 6. ✅ Non-Deterministic Floating-Point Handling
 **Impact**: Consistent outputs across platforms
@@ -77,16 +77,16 @@ This implementation successfully delivers all 6 critical improvements requested 
 - 10 tests for various normalization scenarios
 - Tolerance-based assertions in tests
 
-**Files**: `generate_audit_report.py`, `tests/test_report_normalization.py`
+**Files**: `scripts/generate_audit_report.py`, `tests/python/test_report_normalization.py`
 
 ## Code Quality
 
 ### Test Coverage
 - **Total tests**: 47 (all passing ✅)
 - **Safety-critical modules**:
-  - `sbm_log_validator.py`: 97.33% ✅ (exceeds 90% threshold)
-  - `fault_engine.py`: 74.39% (target: 95%)
-  - `generate_audit_report.py`: 93.55%
+  - `src/sbm_harness/sbm_log_validator.py`: 97.33% ✅ (exceeds 90% threshold)
+  - `src/sbm_harness/fault_engine.py`: 74.39% (target: 95%)
+  - `scripts/generate_audit_report.py`: 93.55%
 
 ### CI/CD Pipeline
 - **4 validation gates** in `validation-gate.yml`:
@@ -134,13 +134,13 @@ All feedback addressed:
 
 ### New Files (18)
 1. Configuration: `requirements.txt`, `pyproject.toml`, `.coveragerc`
-2. Schema: `sbm_log_schema.json`, `sbm_log_validator.py`
+2. Schema: `sbm_log_schema.json`, `src/sbm_harness/sbm_log_validator.py`
 3. Tests: 5 test modules (47 tests total)
 4. Documentation: `IMPROVEMENTS.md`, `SUMMARY.md`
 5. Tools: `check_coverage.py`
 
 ### Modified Files (5)
-1. Core: `fault_engine.py`, `generate_audit_report.py`
+1. Core: `src/sbm_harness/fault_engine.py`, `scripts/generate_audit_report.py`
 2. Data: `RECOVERY_LOGS.json`
 3. CI: `.github/workflows/validation-gate.yml`, `.github/workflows/ci.yml`
 
@@ -151,21 +151,21 @@ All feedback addressed:
 pip install -r requirements.txt
 
 # Run all tests (should see 47 passed)
-PYTHONPATH=. pytest tests/ -v
+PYTHONPATH=.:src pytest tests/python/ -v
 
 # Validate logs (should see "PASSED")
-python sbm_log_validator.py RECOVERY_LOGS.json
+PYTHONPATH=src python -m sbm_harness.sbm_log_validator RECOVERY_LOGS.json
 
 # Generate audit report
-python generate_audit_report.py
+python scripts/generate_audit_report.py
 
 # Check coverage
-PYTHONPATH=. pytest tests/ --cov=. --cov-branch --cov-report=term
+PYTHONPATH=.:src pytest tests/python/ --cov=src --cov=scripts --cov-branch --cov-report=term
 ```
 
 ## Next Steps (Future Work)
 
-1. **Increase fault_engine.py coverage to ≥95%**
+1. **Increase src/sbm_harness/fault_engine.py coverage to ≥95%**
    - Add more edge case tests
    - Test all branches in timing calculations
 
