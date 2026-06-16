@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p build/repro
           python simulation.py --seed 42 --out build/repro/py_trace.jsonl
-          gcc -O3 -std=c11 -Wall -Wextra sim.c -o sim_c -lm
+          gcc -O3 -std=c11 -Wall -Wextra src/c/sim.c -o sim_c -lm
           ./sim_c --seed 42 --out build/repro/c_trace.jsonl
           
       - name: Verify Parity
@@ -143,7 +143,7 @@ jobs:
       
       - name: Run audit report snapshot tests
         run: |
-          PYTHONPATH=. python tests/test_audit_snapshots.py
+          PYTHONPATH=. python tests/python/test_audit_snapshots.py
       
       - name: Upload report on failure
         if: failure()

@@ -54,7 +54,7 @@ $(UNIT_TESTS): tests/unit_tests.c $(OBJ_FILES)
 unit_tests: $(UNIT_TESTS)
 
 # Build C simulation for reproducibility checking
-$(SIM_C): sim.c | $(BUILD_DIR)
+$(SIM_C): src/c/sim.c | $(BUILD_DIR)
 	$(CC) $(SIM_CFLAGS) -o $@ $< -lm
 
 # Run reproducibility check (compares Python vs C simulation)

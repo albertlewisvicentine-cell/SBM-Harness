@@ -10,7 +10,7 @@ The validation gate consists of two jobs that run automatically on pull requests
 **Purpose**: Verify that Python and C implementations produce identical results.
 
 This gate:
-- Runs both Python (`simulation.py`) and C (`sim.c`) simulations with the same seed
+- Runs both Python (`simulation.py`) and C (`src/c/sim.c`) simulations with the same seed
 - Compares outputs within a relative tolerance (`rtol=1e-7`)
 - **Fails if** the implementations diverge, indicating a broken implementation
 
@@ -33,7 +33,7 @@ This gate:
 
 ### Simulation Scripts
 - `simulation.py` - Python reference implementation with Simple LCG
-- `sim.c` - C implementation with matching LCG for exact reproducibility
+- `src/c/sim.c` - C implementation with matching LCG for exact reproducibility
 - `repro_compare.py` - Parity comparison tool (checks Python vs C outputs)
 
 ### Statistical Analysis Scripts
@@ -67,7 +67,7 @@ make repro-check && make safety-gate
 python simulation.py --seed 42 --out py_trace.jsonl
 
 # Compile and run C simulation  
-gcc -O3 sim.c -o sim_c -lm
+gcc -O3 src/c/sim.c -o sim_c -lm
 ./sim_c --seed 42 --out c_trace.jsonl
 
 # Compare outputs
