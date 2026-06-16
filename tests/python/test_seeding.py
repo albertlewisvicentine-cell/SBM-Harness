@@ -5,7 +5,7 @@ Tests for deterministic seeding in fault injection.
 
 import unittest
 import os
-from fault_engine import PhysicsDerivedInjector, Environment
+from sbm_harness.fault_engine import PhysicsDerivedInjector, Environment
 
 
 class TestDeterministicSeeding(unittest.TestCase):

@@ -4,7 +4,7 @@ Tests for audit report generation and normalization.
 """
 
 import unittest
-from generate_audit_report import (
+from sbm_harness.generate_audit_report import (
     normalize_timestamp,
     normalize_float,
     normalize_report_for_snapshot

@@ -7,7 +7,7 @@ import unittest
 
 import numpy as np
 
-from state_field import StateField
+from sbm_harness.state_field import StateField
 
 
 class TestStateField(unittest.TestCase):

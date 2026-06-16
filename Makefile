@@ -15,8 +15,8 @@ REPRO_SEED = 42
 # The new sbm_snapshot.c provides the same API plus enhanced functionality
 # with backward compatibility wrappers. state_manager.c is kept in the repo
 # for reference and documentation purposes.
-SRC_FILES = src/core_guards.c src/sbm_snapshot.c
-OBJ_FILES = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
+SRC_FILES = src/c/core_guards.c src/c/sbm_snapshot.c
+OBJ_FILES = $(patsubst src/c/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 
 # Test executables
 FAULT_INJECTION = $(BUILD_DIR)/fault_injection_suite
@@ -34,11 +34,11 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 # Compile source files to object files
-$(BUILD_DIR)/%.o: src/%.c include/sbm_harness.h include/sbm_types.h include/sbm_snapshot.h
+$(BUILD_DIR)/%.o: src/c/%.c include/sbm_harness.h include/sbm_types.h include/sbm_snapshot.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Build fault injection test suite
-$(FAULT_INJECTION): tests/fault_injection.c $(OBJ_FILES)
+$(FAULT_INJECTION): tests/c/fault_injection.c $(OBJ_FILES)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Alias target for fault_injection_suite
@@ -46,7 +46,7 @@ $(FAULT_INJECTION): tests/fault_injection.c $(OBJ_FILES)
 fault_injection_suite: $(FAULT_INJECTION)
 
 # Build unit tests
-$(UNIT_TESTS): tests/unit_tests.c $(OBJ_FILES)
+$(UNIT_TESTS): tests/c/unit_tests.c $(OBJ_FILES)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Alias target for unit_tests
@@ -54,7 +54,7 @@ $(UNIT_TESTS): tests/unit_tests.c $(OBJ_FILES)
 unit_tests: $(UNIT_TESTS)
 
 # Build C simulation for reproducibility checking
-$(SIM_C): sim.c | $(BUILD_DIR)
+$(SIM_C): src/c/sim.c | $(BUILD_DIR)
 	$(CC) $(SIM_CFLAGS) -o $@ $< -lm
 
 # Run reproducibility check (compares Python vs C simulation)
@@ -62,9 +62,9 @@ $(SIM_C): sim.c | $(BUILD_DIR)
 repro-check: $(SIM_C)
 	@echo "=== Running reproducibility check ==="
 	@mkdir -p $(BUILD_DIR)/repro
-	python3 simulation.py --seed $(REPRO_SEED) --out $(BUILD_DIR)/repro/py_trace.jsonl
+	python3 scripts/simulation.py --seed $(REPRO_SEED) --out $(BUILD_DIR)/repro/py_trace.jsonl
 	$(SIM_C) --seed $(REPRO_SEED) --out $(BUILD_DIR)/repro/c_trace.jsonl
-	python3 repro_compare.py $(BUILD_DIR)/repro/py_trace.jsonl $(BUILD_DIR)/repro/c_trace.jsonl --rtol 1e-7
+	python3 scripts/repro_compare.py $(BUILD_DIR)/repro/py_trace.jsonl $(BUILD_DIR)/repro/c_trace.jsonl --rtol 1e-7
 	@echo "=== Reproducibility check passed ==="
 
 # Run statistical safety gate
@@ -72,8 +72,8 @@ repro-check: $(SIM_C)
 safety-gate:
 	@echo "=== Running statistical safety gate ==="
 	@mkdir -p $(BUILD_DIR)/repro
-	python3 run_batch.py --trials 1000 --out $(BUILD_DIR)/repro/results.jsonl
-	python3 safety_gate.py $(BUILD_DIR)/repro/results.jsonl --p_max 0.01
+	python3 scripts/run_batch.py --trials 1000 --out $(BUILD_DIR)/repro/results.jsonl
+	python3 scripts/safety_gate.py $(BUILD_DIR)/repro/results.jsonl --p_max 0.01
 	@echo "=== Safety gate passed ==="
 
 # Run all tests
@@ -91,13 +91,13 @@ test: $(UNIT_TESTS) $(FAULT_INJECTION)
 .PHONY: cppcheck
 cppcheck:
 	@which cppcheck > /dev/null || (echo "cppcheck not installed. Install with: sudo apt-get install cppcheck" && exit 1)
-	cppcheck --enable=all --inconclusive --std=c11 -Iinclude src/ tests/ 2>&1
+	cppcheck --enable=all --inconclusive --std=c11 -Iinclude src/c/ tests/c/ 2>&1
 
 # Static analysis with clang-tidy
 .PHONY: clang-tidy
 clang-tidy:
 	@which clang-tidy > /dev/null || (echo "clang-tidy not installed. Install with: sudo apt-get install clang-tidy" && exit 1)
-	clang-tidy src/*.c tests/*.c -- $(CFLAGS)
+	clang-tidy src/c/*.c tests/c/*.c -- $(CFLAGS)
 
 # Clean build artifacts
 .PHONY: clean

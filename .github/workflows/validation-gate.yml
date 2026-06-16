@@ -33,14 +33,14 @@ jobs:
           SBM_FAULT_SEED: 42
         run: |
           mkdir -p build/repro
-          python simulation.py --seed 42 --out build/repro/py_trace.jsonl
-          gcc -O3 -std=c11 -Wall -Wextra sim.c -o sim_c -lm
+          python scripts/simulation.py --seed 42 --out build/repro/py_trace.jsonl
+          gcc -O3 -std=c11 -Wall -Wextra src/c/sim.c -o sim_c -lm
           ./sim_c --seed 42 --out build/repro/c_trace.jsonl
           
       - name: Verify Parity
         run: |
           # Fails if C doesn't match Python within rtol
-          python repro_compare.py build/repro/py_trace.jsonl build/repro/c_trace.jsonl --rtol 1e-7
+          python scripts/repro_compare.py build/repro/py_trace.jsonl build/repro/c_trace.jsonl --rtol 1e-7
       
       - name: Upload artifacts on failure
         if: failure()
@@ -67,14 +67,14 @@ jobs:
       
       - name: Validate RECOVERY_LOGS.json schema
         run: |
-          python sbm_log_validator.py RECOVERY_LOGS.json
+          PYTHONPATH=src python src/sbm_harness/sbm_log_validator.py RECOVERY_LOGS.json
       
       - name: Check schema version compatibility
         run: |
-          python -c "
+          PYTHONPATH=src python -c "
           import json
           from pathlib import Path
-          from sbm_log_validator import SBMLogValidator
+          from sbm_harness.sbm_log_validator import SBMLogValidator
           
           validator = SBMLogValidator()
           with open('RECOVERY_LOGS.json') as f:
@@ -111,12 +111,12 @@ jobs:
         run: |
           # Run 1000 trials to get a solid distribution
           mkdir -p build/repro
-          python run_batch.py --trials 1000 --out build/repro/results.jsonl --seed-base ${SBM_FAULT_SEED}
+          python scripts/run_batch.py --trials 1000 --out build/repro/results.jsonl --seed-base ${SBM_FAULT_SEED}
 
       - name: Evaluate Wilson Upper Bound
         run: |
           # Fails if p_failure (upper bound) > 0.01 (1%)
-          python safety_gate.py build/repro/results.jsonl --p_max 0.01
+          python scripts/safety_gate.py build/repro/results.jsonl --p_max 0.01
       
       - name: Upload artifacts on failure
         if: failure()
@@ -143,7 +143,7 @@ jobs:
       
       - name: Run audit report snapshot tests
         run: |
-          PYTHONPATH=. python tests/test_audit_snapshots.py
+          PYTHONPATH=src python tests/python/test_audit_snapshots.py
       
       - name: Upload report on failure
         if: failure()

@@ -17,8 +17,8 @@ from pathlib import Path
 from collections import defaultdict
 from typing import Dict, List, Set, Tuple
 
-# Repository root
-REPO_ROOT = Path(__file__).parent
+# Repository root (three levels up from src/sbm_harness/)
+REPO_ROOT = Path(__file__).parent.parent.parent
 
 # Directories to exclude
 EXCLUDE_DIRS = {'.git', '__pycache__', '.pytest_cache', 'node_modules', '.venv', 'venv'}

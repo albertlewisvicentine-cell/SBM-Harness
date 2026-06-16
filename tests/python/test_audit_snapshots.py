@@ -6,7 +6,7 @@ Tests that reports remain stable and comparable across runs.
 
 import unittest
 from pathlib import Path
-from generate_audit_report import generate_audit_report, normalize_report_for_snapshot
+from sbm_harness.generate_audit_report import generate_audit_report, normalize_report_for_snapshot
 
 
 class TestAuditReportSnapshots(unittest.TestCase):

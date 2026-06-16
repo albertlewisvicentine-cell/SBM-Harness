@@ -9,9 +9,9 @@ import os
 from pathlib import Path
 import sys
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-import check_digital_assets
+# Add src directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
+from sbm_harness import check_digital_assets
 
 
 class TestDigitalAssetsChecker(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestDigitalAssetsChecker(unittest.TestCase):
     
     def setUp(self):
         """Set up test environment."""
-        self.repo_root = Path(__file__).parent.parent
+        self.repo_root = Path(__file__).parent.parent.parent
         self.test_files = list(check_digital_assets.get_all_files())
         
     def test_file_discovery(self):
